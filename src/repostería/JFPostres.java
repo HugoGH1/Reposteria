@@ -6,6 +6,7 @@ package repostería;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -44,6 +45,19 @@ public class JFPostres extends javax.swing.JFrame {
             System.out.println("Se ha afectado: "+filasAfectadas);
         }catch(SQLException sqle){
             System.out.println(sqle.getMessage()+"alta");
+        }
+    }
+    // La lógica va a estar en jalar el objeto de la tabla
+    public void eliminar(Postres obj){
+        try{
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Postres WHERE Postre = ?");
+            
+            ps.setString(1, obj.getNombre());
+            int filasAfectadas = ps.executeUpdate();
+            System.out.println("Número de filas afectadas: "+filasAfectadas);
+        }catch(SQLException sqle){
+            System.out.println(sqle.getMessage());
+            sqle.printStackTrace();
         }
     }
     /**
@@ -94,7 +108,7 @@ public class JFPostres extends javax.swing.JFrame {
                     .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(66, 66, 66)
                 .addComponent(jButton1)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         pack();
