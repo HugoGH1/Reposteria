@@ -5,7 +5,11 @@
 package repostería;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import static repostería.PostreP.st;
 
 /**
  *
@@ -14,6 +18,7 @@ import javax.swing.JOptionPane;
 public class JFClientes extends javax.swing.JFrame {
     public int idPostre;
     private Connection con = null;
+    String[] datos = new String[12];
     /**
      * Creates new form JFClientes
      */
@@ -78,7 +83,34 @@ public class JFClientes extends javax.swing.JFrame {
         }
         return idPostre;
     }
+    public void actualizarTabla() {
+    DefaultTableModel miModelo = (DefaultTableModel) ClienteP.tablaClientes.getModel();
+    miModelo.setRowCount(0); // Limpiar filas existentes
 
+    String sentenciaSQL = "SELECT * FROM clientes";
+
+    try {
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery(sentenciaSQL);
+        while (rs.next()) {
+            datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+                datos[6] = rs.getString(7);
+                datos[7] = rs.getString(8);
+                datos[8] = rs.getString(9);
+                datos[9] = rs.getString(10);
+                datos[10] = "";
+                datos[11] = "";
+            miModelo.addRow(datos);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
     public void alta(Clientes obj){
             String secuenciaSQL = ("INSERT INTO Clientes (Nombre, Apellido, NumeroTelefonico,Calle,"
                     + "NumeroExterior, Colonia, CodigoPostal,NumeroPedidos,idPostre) VALUE ('"+obj.getNombre()+"','"+obj.getApellido()+"','"+
@@ -113,6 +145,7 @@ public class JFClientes extends javax.swing.JFrame {
         lblNumeroPedido = new javax.swing.JLabel();
         cmPostre = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -136,6 +169,13 @@ public class JFClientes extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Cerrar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -163,7 +203,10 @@ public class JFClientes extends javax.swing.JFrame {
                         .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton2))
                             .addComponent(txtNumTelefonico, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(191, Short.MAX_VALUE))
         );
@@ -185,7 +228,9 @@ public class JFClientes extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(cmPostre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(259, Short.MAX_VALUE))
         );
 
@@ -194,7 +239,21 @@ public class JFClientes extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         alta((Clientes) creacionObjeto());
+        JOptionPane.showMessageDialog(null, "Listo");
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtNumTelefonico.setText("");
+        txtCalle.setText("");
+        txtNumExt.setText("");
+        txtColonia.setText("");
+        txtCP.setText("");
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.setVisible(false);
+        actualizarTabla();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -234,6 +293,7 @@ public class JFClientes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cmPostre;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel lblNumeroPedido;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtCP;

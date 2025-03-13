@@ -13,20 +13,16 @@ import javax.swing.JOptionPane;
  * @author hecto
  */
 public class Main extends javax.swing.JFrame {
-
+        PostreP postres = new PostreP();
+        ClienteP clientes = new ClienteP();
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
-        PostreP postres = new PostreP();
-        postres.setSize(1000,720);
-        postres.setVisible(true);
         
-        content.removeAll();
-        content.add(postres, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint(); 
+               
+        
     }
 
     /**
@@ -42,6 +38,7 @@ public class Main extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1250, 720));
@@ -75,7 +72,20 @@ public class Main extends javax.swing.JFrame {
         jButton1.setBorderPainted(false);
         jButton1.setContentAreaFilled(false);
         jButton1.setFocusPainted(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 300, 90));
+
+        jButton2.setText("Clientes");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, -1, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
 
@@ -92,6 +102,26 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        content.removeAll();
+        content.add(postres, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint(); 
+        postres.setSize(1000,720);
+        postres.setVisible(true);
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        content.removeAll();
+        content.add(clientes, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint(); 
+        clientes.setSize(1000,720);
+        clientes.setVisible(true);
+
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     
     /**
@@ -132,6 +162,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables

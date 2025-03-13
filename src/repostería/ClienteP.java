@@ -24,22 +24,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import static repostería.PostreP.st;
+import static repostería.PostreP.tablaPostre;
 
 /**
  *
  * @author Carolina
  */
-public class PostreP extends javax.swing.JPanel {
-    //public static JTable tablaPostre;
+public class ClienteP extends javax.swing.JPanel {
+
     PreparedStatement ps;
     public static Statement st;
     private Connection con = null;
-    String[] datos = new String[6];
+    String[] datos = new String[12];
     
-    public PostreP() {
+    public ClienteP() {
         initComponents();
         conectar();
-        TablaPostres();
+        TablaClientes();
     }
     public void conectar() {
         try {
@@ -49,20 +51,25 @@ public class PostreP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
-    
-    public void TablaPostres() {
+    public void TablaClientes() {
         DefaultTableModel miModelo = new DefaultTableModel();
         //titulos
         miModelo.addColumn("ID");
         miModelo.addColumn("Nombre");
-        miModelo.addColumn("PrecioVenta");
-        miModelo.addColumn("Cantidad");
+        miModelo.addColumn("Apellido");
+        miModelo.addColumn("Número Telefónico");
+        miModelo.addColumn("Calle");
+        miModelo.addColumn("NumeroExterior");
+        miModelo.addColumn("Colonia");
+        miModelo.addColumn("CP");
+        miModelo.addColumn("# de Pedidos");
+        miModelo.addColumn("Postre fav");
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
-        tablaPostre.setModel(miModelo);
+        tablaClientes.setModel(miModelo);
 
-        tablaPostre.setRowHeight(30);
-        String sentenciaSQL = "SELECT * FROM postres";
+        tablaClientes.setRowHeight(30);
+        String sentenciaSQL = "SELECT * FROM clientes";
 
         try {
             st = con.createStatement();
@@ -72,48 +79,59 @@ public class PostreP extends javax.swing.JPanel {
                 datos[1] = rs.getString(2);
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
-                datos[4] = "";
-                datos[5] = "";
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+                datos[6] = rs.getString(7);
+                datos[7] = rs.getString(8);
+                datos[8] = rs.getString(9);
+                datos[9] = rs.getString(10);
+                datos[10] = "";
+                datos[11] = "";
                 miModelo.addRow(datos);
             }
-            tablaPostre.setModel(miModelo);
+            tablaClientes.setModel(miModelo);
 
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        tablaPostre.setModel(miModelo);
+        tablaClientes.setModel(miModelo);
 
         // Agrega los botones con imágenes
-        tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/edit.png"));
-        tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 4));
+        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/edit.png"));
+        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 10));
 
-        tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/trash.png"));
-        tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 5));
+        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/trash.png"));
+        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 11));
     }
     public void actualizarTabla() {
-    DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
+    DefaultTableModel miModelo = (DefaultTableModel) tablaClientes.getModel();
     miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "SELECT * FROM postres";
+    String sentenciaSQL = "SELECT * FROM clientes";
 
     try {
         st = con.createStatement();
         ResultSet rs = st.executeQuery(sentenciaSQL);
         while (rs.next()) {
             datos[0] = rs.getString(1);
-            datos[1] = rs.getString(2);
-            datos[2] = rs.getString(3);
-            datos[3] = rs.getString(4);
-            datos[4] = "";
-            datos[5] = "";
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+                datos[6] = rs.getString(7);
+                datos[7] = rs.getString(8);
+                datos[8] = rs.getString(9);
+                datos[9] = rs.getString(10);
+                datos[10] = "";
+                datos[11] = "";
             miModelo.addRow(datos);
         }
     } catch (SQLException ex) {
-        Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
-    
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -164,13 +182,13 @@ public class PostreP extends javax.swing.JPanel {
                 int selectedRow = table.getSelectedRow();
                 String id = table.getValueAt(selectedRow, 0).toString();
 
-                if (columnIndex == 4) {
+                if (columnIndex == 10) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
                     // Aquí puedes abrir un formulario para editar el registro
-                } else if (columnIndex == 5) {
+                } else if (columnIndex == 11) {
                     JOptionPane.showMessageDialog(button, "Eliminando " + id);
                     try {
-                        PreparedStatement ps = con.prepareStatement("DELETE FROM Postres WHERE idPostre = ?");
+                        PreparedStatement ps = con.prepareStatement("DELETE FROM clientes WHERE idCliente = ?");
 
                         ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
@@ -178,7 +196,6 @@ public class PostreP extends javax.swing.JPanel {
                         actualizarTabla();
                     } catch (SQLException sqle) {
                         System.out.println(sqle.getMessage());
-                        JOptionPane.showMessageDialog(null, "No puedes eliminar un postre");
                         sqle.printStackTrace();
                     }
 
@@ -201,7 +218,7 @@ public class PostreP extends javax.swing.JPanel {
         }
     }
 
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -212,19 +229,18 @@ public class PostreP extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablaPostre = new javax.swing.JTable();
-        btnInsertar = new javax.swing.JButton();
+        tablaClientes = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
-        setPreferredSize(new java.awt.Dimension(950, 720));
 
-        jScrollPane1.setViewportView(tablaPostre);
+        jScrollPane1.setViewportView(tablaClientes);
 
-        btnInsertar.setText("+");
-        btnInsertar.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setText("+");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInsertarActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -233,32 +249,32 @@ public class PostreP extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 860, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(54, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 869, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addGap(148, 148, 148)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
-        JFPostres IPos = new JFPostres();
-        IPos.setVisible(true);
-    }//GEN-LAST:event_btnInsertarActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFClientes ICli = new JFClientes();
+        ICli.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnInsertar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTable tablaPostre;
+    public static javax.swing.JTable tablaClientes;
     // End of variables declaration//GEN-END:variables
 }
