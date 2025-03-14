@@ -6,8 +6,16 @@ package repostería;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import static repostería.PostreP.st;
+import static repostería.PostreP.tablaPostre;
 
 /**
  *
@@ -15,6 +23,7 @@ import java.sql.Statement;
  */
 public class JFPostres extends javax.swing.JFrame {
     private Connection con = null;
+    String[] datos = new String[6];
     /**
      * Creates new form JFPostres
      */
@@ -35,6 +44,28 @@ public class JFPostres extends javax.swing.JFrame {
         p1.setPrecioVenta(Float.parseFloat(txtPrecioVenta.getText().toString()));
         return p1;
     }
+    public void actualizarTabla() {
+    DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
+    miModelo.setRowCount(0); // Limpiar filas existentes
+
+    String sentenciaSQL = "SELECT * FROM postres";
+
+    try {
+        st = con.createStatement();
+        ResultSet rs = st.executeQuery(sentenciaSQL);
+        while (rs.next()) {
+            datos[0] = rs.getString(1);
+            datos[1] = rs.getString(2);
+            datos[2] = rs.getString(3);
+            datos[3] = rs.getString(4);
+            datos[4] = "";
+            datos[5] = "";
+            miModelo.addRow(datos);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
     public void alta(Postres obj){
             String secuenciaSQL = ("INSERT INTO Postres (Nombre, PrecioVenta, Cantidad) VALUE ('"+obj.getNombre()+"','"+obj.getPrecioVenta()+"','"+0+"')");
             try{
@@ -44,6 +75,20 @@ public class JFPostres extends javax.swing.JFrame {
             System.out.println("Se ha afectado: "+filasAfectadas);
         }catch(SQLException sqle){
             System.out.println(sqle.getMessage()+"alta");
+        }
+    }
+    // La lógica va a estar en jalar el objeto de la tabla
+    public void eliminar(Postres obj){
+        try{
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Postres WHERE Postre = ?");
+            
+            ps.setString(1, obj.getNombre());
+            int filasAfectadas = ps.executeUpdate();
+            System.out.println("Número de filas afectadas: "+filasAfectadas);
+            actualizarTabla();
+        }catch(SQLException sqle){
+            System.out.println(sqle.getMessage());
+            sqle.printStackTrace();
         }
     }
     /**
@@ -58,6 +103,7 @@ public class JFPostres extends javax.swing.JFrame {
         txtNombre = new javax.swing.JTextField();
         txtPrecioVenta = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -72,6 +118,13 @@ public class JFPostres extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Cerrar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -81,9 +134,12 @@ public class JFPostres extends javax.swing.JFrame {
                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2))
                     .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(190, Short.MAX_VALUE))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,8 +149,10 @@ public class JFPostres extends javax.swing.JFrame {
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(66, 66, 66)
-                .addComponent(jButton1)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         pack();
@@ -102,7 +160,15 @@ public class JFPostres extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         alta((Postres)creacionObjeto());
+        JOptionPane.showMessageDialog(null, "Listo");
+        txtNombre.setText("");
+        txtPrecioVenta.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.setVisible(false);
+       actualizarTabla();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,6 +207,7 @@ public class JFPostres extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecioVenta;
     // End of variables declaration//GEN-END:variables
