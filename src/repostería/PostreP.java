@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -110,6 +111,7 @@ public class PostreP extends javax.swing.JPanel {
             miModelo.addRow(datos);
         }
     } catch (SQLException ex) {
+        System.out.println("Hubo error al recargar la tabla");
         Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
@@ -175,13 +177,13 @@ public class PostreP extends javax.swing.JPanel {
                         ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
                         System.out.println("Número de filas afectadas: " + filasAfectadas);
-                        actualizarTabla();
+                        System.out.println("Postre eliminado");
+                        SwingUtilities.invokeLater(() -> actualizarTabla());
                     } catch (SQLException sqle) {
-                        System.out.println(sqle.getMessage());
+                        //System.out.println(sqle.getMessage());
                         JOptionPane.showMessageDialog(null, "No puedes eliminar un postre");
-                        sqle.printStackTrace();
+                        //sqle.printStackTrace();
                     }
-
                     // miModelo.removeRow(row); // Elimina la fila visualmente (falta eliminar de BD)
                 }
             }

@@ -6,6 +6,7 @@ package repostería;
 
 import java.awt.BorderLayout;
 import java.awt.*;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,8 +38,8 @@ public class Main extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         content = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnPostres = new javax.swing.JButton();
+        btnClientes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1250, 720));
@@ -63,29 +64,53 @@ public class Main extends javax.swing.JFrame {
 
         jPanel1.add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 1050, 720));
 
-        jPanel2.setBackground(new java.awt.Color(255, 175, 181));
+        jPanel2.setBackground(new java.awt.Color(218, 95, 128));
+        jPanel2.setForeground(new java.awt.Color(218, 95, 128));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setFont(new java.awt.Font("Montserrat", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(218, 95, 128));
-        jButton1.setText("POSTRES");
-        jButton1.setBorderPainted(false);
-        jButton1.setContentAreaFilled(false);
-        jButton1.setFocusPainted(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        btnPostres.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnPostres.setForeground(new java.awt.Color(255, 255, 255));
+        btnPostres.setText("POSTRES");
+        btnPostres.setBorderPainted(false);
+        btnPostres.setContentAreaFilled(false);
+        btnPostres.setFocusPainted(false);
+        btnPostres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnPostresMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnPostresMouseExited(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 300, 90));
+        btnPostres.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPostresActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 300, 90));
 
-        jButton2.setText("Clientes");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+        btnClientes.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnClientes.setForeground(new java.awt.Color(255, 255, 255));
+        btnClientes.setText("CLIENTES");
+        btnClientes.setBorderPainted(false);
+        btnClientes.setContentAreaFilled(false);
+        btnClientes.setMaximumSize(new java.awt.Dimension(103, 29));
+        btnClientes.setMinimumSize(new java.awt.Dimension(103, 29));
+        btnClientes.setPreferredSize(new java.awt.Dimension(103, 29));
+        btnClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnClientesMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnClientesMouseExited(evt);
             }
         });
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, -1, -1));
+        btnClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClientesActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 300, 90));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
 
@@ -103,7 +128,7 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnPostresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPostresActionPerformed
         content.removeAll();
         content.add(postres, BorderLayout.CENTER);
         content.revalidate();
@@ -111,9 +136,9 @@ public class Main extends javax.swing.JFrame {
         postres.setSize(1000,720);
         postres.setVisible(true);
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnPostresActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
         content.removeAll();
         content.add(clientes, BorderLayout.CENTER);
         content.revalidate();
@@ -121,9 +146,36 @@ public class Main extends javax.swing.JFrame {
         clientes.setSize(1000,720);
         clientes.setVisible(true);
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnClientesActionPerformed
+
+    private void btnPostresMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPostresMouseEntered
+        MouseEnteredButtons(btnPostres);
+    }//GEN-LAST:event_btnPostresMouseEntered
+
+    private void btnPostresMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPostresMouseExited
+        MouseExitedButtons(btnPostres);
+    }//GEN-LAST:event_btnPostresMouseExited
+
+    private void btnClientesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseEntered
+        MouseEnteredButtons(btnClientes);
+    }//GEN-LAST:event_btnClientesMouseEntered
+
+    private void btnClientesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseExited
+        MouseExitedButtons(btnClientes);
+    }//GEN-LAST:event_btnClientesMouseExited
 
     
+    public void MouseExitedButtons(JButton button){
+        button.setBackground(Color.decode("#DA5F80"));
+        button.setForeground(Color.decode("#FFFFFF"));
+        button.setOpaque(true);
+    }
+    
+    public void MouseEnteredButtons(JButton button){
+        button.setBackground(Color.decode("#e889a4"));
+        button.setForeground(Color.decode("#DA5F80"));
+        button.setOpaque(true);
+    }
     /**
      * @param args the command line arguments
      */
@@ -160,9 +212,9 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClientes;
+    private javax.swing.JButton btnPostres;
     private javax.swing.JPanel content;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables

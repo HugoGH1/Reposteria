@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import static repostería.PostreP.st;
@@ -115,17 +116,17 @@ public class ClienteP extends javax.swing.JPanel {
         ResultSet rs = st.executeQuery(sentenciaSQL);
         while (rs.next()) {
             datos[0] = rs.getString(1);
-                datos[1] = rs.getString(2);
-                datos[2] = rs.getString(3);
-                datos[3] = rs.getString(4);
-                datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-                datos[6] = rs.getString(7);
-                datos[7] = rs.getString(8);
-                datos[8] = rs.getString(9);
-                datos[9] = rs.getString(10);
-                datos[10] = "";
-                datos[11] = "";
+            datos[1] = rs.getString(2);
+            datos[2] = rs.getString(3);
+            datos[3] = rs.getString(4);
+            datos[4] = rs.getString(5);
+            datos[5] = rs.getString(6);
+            datos[6] = rs.getString(7);
+            datos[7] = rs.getString(8);
+            datos[8] = rs.getString(9);
+            datos[9] = rs.getString(10);
+            datos[10] = "";
+            datos[11] = "";
             miModelo.addRow(datos);
         }
     } catch (SQLException ex) {
@@ -193,7 +194,8 @@ public class ClienteP extends javax.swing.JPanel {
                         ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
                         System.out.println("Número de filas afectadas: " + filasAfectadas);
-                        actualizarTabla();
+                        
+                        SwingUtilities.invokeLater(() -> actualizarTabla());
                     } catch (SQLException sqle) {
                         System.out.println(sqle.getMessage());
                         sqle.printStackTrace();
