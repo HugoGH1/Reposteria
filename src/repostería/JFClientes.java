@@ -65,6 +65,11 @@ public class JFClientes extends javax.swing.JFrame {
         c1.setIdPostre(idPostre());
         return c1;
     }
+    
+    public void rellenar(){
+        
+    }
+    
     public int idPostre(){
         String nombre = cmPostre.getSelectedItem().toString();
         System.out.println(nombre);

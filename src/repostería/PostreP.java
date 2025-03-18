@@ -31,17 +31,19 @@ import javax.swing.table.TableCellRenderer;
  * @author Carolina
  */
 public class PostreP extends javax.swing.JPanel {
+
     //public static JTable tablaPostre;
     PreparedStatement ps;
     public static Statement st;
     private Connection con = null;
     String[] datos = new String[6];
-    
+
     public PostreP() {
         initComponents();
         conectar();
         TablaPostres();
     }
+
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
@@ -50,10 +52,9 @@ public class PostreP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
-    
+
     public void TablaPostres() {
         DefaultTableModel miModelo = new DefaultTableModel();
-        //titulos
         miModelo.addColumn("ID");
         miModelo.addColumn("Nombre");
         miModelo.addColumn("PrecioVenta");
@@ -61,8 +62,33 @@ public class PostreP extends javax.swing.JPanel {
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
         tablaPostre.setModel(miModelo);
-
         tablaPostre.setRowHeight(30);
+        String sentenciaSQL = "SELECT * FROM postres";
+        try {
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentenciaSQL);
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = "";
+                datos[5] = "";
+                miModelo.addRow(datos); }
+            tablaPostre.setModel(miModelo);
+        } catch (SQLException ex) {
+            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);}
+        tablaPostre.setModel(miModelo);
+        tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/edit.png"));
+        tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 4));
+        tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/trash.png"));
+        tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 5));
+    }
+
+    public void actualizarTabla() {
+        DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
+        miModelo.setRowCount(0); // Limpiar filas existentes
+
         String sentenciaSQL = "SELECT * FROM postres";
 
         try {
@@ -77,45 +103,12 @@ public class PostreP extends javax.swing.JPanel {
                 datos[5] = "";
                 miModelo.addRow(datos);
             }
-            tablaPostre.setModel(miModelo);
-
         } catch (SQLException ex) {
+            System.out.println("Hubo error al recargar la tabla");
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        tablaPostre.setModel(miModelo);
-
-        // Agrega los botones con imágenes
-        tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/edit.png"));
-        tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 4));
-
-        tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/trash.png"));
-        tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 5));
     }
-    public void actualizarTabla() {
-    DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
-    miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "SELECT * FROM postres";
-
-    try {
-        st = con.createStatement();
-        ResultSet rs = st.executeQuery(sentenciaSQL);
-        while (rs.next()) {
-            datos[0] = rs.getString(1);
-            datos[1] = rs.getString(2);
-            datos[2] = rs.getString(3);
-            datos[3] = rs.getString(4);
-            datos[4] = "";
-            datos[5] = "";
-            miModelo.addRow(datos);
-        }
-    } catch (SQLException ex) {
-        System.out.println("Hubo error al recargar la tabla");
-        Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}
-    
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -124,11 +117,13 @@ public class PostreP extends javax.swing.JPanel {
             setBorderPainted(false);
             setContentAreaFilled(false);
         }
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             return this;
         }
     }
+
     // Clase para editar celdas con botones
     class ButtonEditor extends DefaultCellEditor {
 
@@ -153,6 +148,7 @@ public class PostreP extends javax.swing.JPanel {
                 }
             });
         }
+
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.table = table;
@@ -203,7 +199,6 @@ public class PostreP extends javax.swing.JPanel {
         }
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
