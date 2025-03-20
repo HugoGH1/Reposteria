@@ -38,8 +38,6 @@
                       <Component id="txtColonia" min="-2" pref="71" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="txtCP" min="-2" pref="71" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                      <Component id="lblNumeroPedido" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="txtApellido" min="-2" pref="71" max="-2" attributes="0"/>
@@ -54,7 +52,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="191" max="32767" attributes="0"/>
+              <EmptySpace pref="304" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -73,7 +71,6 @@
                   <Component id="txtNumExt" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtColonia" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtCP" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblNumeroPedido" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
               <Component id="cmPostre" min="-2" max="-2" attributes="0"/>
@@ -121,11 +118,6 @@
     <Component class="javax.swing.JTextField" name="txtCP">
       <Properties>
         <Property name="text" type="java.lang.String" value="CP"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblNumeroPedido">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="NumeroPedidos"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmPostre">

@@ -36,6 +36,7 @@ public class ClienteP extends javax.swing.JPanel {
 
     PreparedStatement ps;
     public static Statement st;
+    String id;
     private Connection con = null;
     String[] datos = new String[12];
 
@@ -181,25 +182,14 @@ public class ClienteP extends javax.swing.JPanel {
         public Object getCellEditorValue() {
             if (clicked) {
                 int selectedRow = table.getSelectedRow();
-                String id = table.getValueAt(selectedRow, 0).toString();
+                id = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 10) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFClientes ICli = new JFClientes();
                     ICli.setVisible(true);
+                    ICli.rellenar(id);
                     
-                    // Aquí puedes abrir un formulario para editar el registro
-                    /*try {
-                        PreparedStatement ps = con.prepareStatement("UPDATE Alumnos SET nombre = ?, especialidad = ? WHERE matricula = ?");
-                        ps.setString(3, obj.getMatricula());
-                        ps.setString(1, obj.getNombre());
-                        ps.setString(2, obj.getEspecialidad());
-                        int filasAfectadas = ps.executeUpdate();
-                        System.out.println("Número de filas afectadas: " + filasAfectadas);
-                    } catch (SQLException sqle) {
-                        System.out.println(sqle.getMessage());
-                        sqle.printStackTrace();
-                    }*/
                 } else if (columnIndex == 11) {
                     JOptionPane.showMessageDialog(button, "Eliminando " + id);
                     try {
