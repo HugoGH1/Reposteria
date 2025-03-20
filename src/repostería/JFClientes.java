@@ -7,6 +7,7 @@ package repostería;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import static repostería.PostreP.st;
@@ -66,10 +67,59 @@ public class JFClientes extends javax.swing.JFrame {
         return c1;
     }
     
-    public void rellenar(){
-        
+    public void rellenar(String id){
+        ResultSet rs,rsP;
+        Statement stm;
+        int idP=0;
+        String ConsultaDatos = "SELECT * FROM clientes WHERE idCliente='"+id+"'";
+        //String ConsultaPostre = "SELECT Nombre as Postre FROM postres p JOIN clientes c ON p.idPostre = c.idPostre WHERE idCliente='"+id+"'";
+                    
+        try{
+            stm = con.createStatement();
+            rs = stm.executeQuery(ConsultaDatos);
+            String nombrePostre = "";
+            while(rs.next()){
+                txtNombre.setText(rs.getString("Nombre"));
+                txtApellido.setText(rs.getString("Apellido"));
+                txtNumTelefonico.setText(rs.getString("NumeroTelefonico"));
+                txtCalle.setText(rs.getString("Calle"));
+                txtNumExt.setText(rs.getString("NumeroExterior"));
+                txtColonia.setText(rs.getString("Colonia"));
+                txtCP.setText(rs.getString("CodigoPostal"));
+                idP = rs.getInt("idPostre");
+            }
+            String ConsultaPostre = "SELECT Nombre FROM postres WHERE idPostre = '"+idP+"'";
+            rsP = stm.executeQuery(ConsultaPostre);
+            while(rsP.next()){
+                nombrePostre = rsP.getString("Nombre");
+            }
+            
+            // Ahora, seleccionamos manualmente el postre en el combo:
+            for (int i = 0; i < cmPostre.getItemCount(); i++) {
+                if (cmPostre.getItemAt(i).toString().equalsIgnoreCase(nombrePostre.trim())) {
+                    cmPostre.setSelectedIndex(i);
+                    break;
+            }
+            }
+        }catch(SQLException sql){
+            JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL CLIENTE");
+            //System.out.println(sql.getMessage());
+        }
     }
-    
+    //Nombre, Apellido, NumeroTelfonico,Calle, NumeroExterior,Colonia,CodigoPostal
+                    // Aquí puedes abrir un formulario para editar el registro
+                    /*try {
+                        PreparedStatement ps = con.prepareStatement("UPDATE clientes SET Nombre = ?, Apellido = ?, NumeroTelfonico= ?,"
+                                + " Calle = ?, NumeroExterior = ?, Colonia = ?, CodigoPostal = ?, WHERE matricula = ?");
+                        ps.setString(3, obj.getMatricula());
+                        ps.setString(1, obj.getNombre());
+                        ps.setString(2, obj.getEspecialidad());
+                        int filasAfectadas = ps.executeUpdate();
+                        System.out.println("Número de filas afectadas: " + filasAfectadas);
+                    } catch (SQLException sqle) {
+                        System.out.println(sqle.getMessage());
+                        sqle.printStackTrace();
+                    }*/
     public int idPostre(){
         String nombre = cmPostre.getSelectedItem().toString();
         System.out.println(nombre);
@@ -147,7 +197,6 @@ public class JFClientes extends javax.swing.JFrame {
         txtNumExt = new javax.swing.JTextField();
         txtColonia = new javax.swing.JTextField();
         txtCP = new javax.swing.JTextField();
-        lblNumeroPedido = new javax.swing.JLabel();
         cmPostre = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -167,8 +216,6 @@ public class JFClientes extends javax.swing.JFrame {
         txtColonia.setText("Colonia");
 
         txtCP.setText("CP");
-
-        lblNumeroPedido.setText("NumeroPedidos");
 
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -201,9 +248,7 @@ public class JFClientes extends javax.swing.JFrame {
                         .addGap(32, 32, 32)
                         .addComponent(txtColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(txtCP, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(lblNumeroPedido))
+                        .addComponent(txtCP, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -213,7 +258,7 @@ public class JFClientes extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton2))
                             .addComponent(txtNumTelefonico, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addContainerGap(304, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,8 +273,7 @@ public class JFClientes extends javax.swing.JFrame {
                     .addComponent(txtCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNumExt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNumeroPedido))
+                    .addComponent(txtCP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
                 .addComponent(cmPostre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -299,7 +343,6 @@ public class JFClientes extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmPostre;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel lblNumeroPedido;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtCP;
     private javax.swing.JTextField txtCalle;
