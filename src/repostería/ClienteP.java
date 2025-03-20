@@ -38,12 +38,13 @@ public class ClienteP extends javax.swing.JPanel {
     public static Statement st;
     private Connection con = null;
     String[] datos = new String[12];
-    
+
     public ClienteP() {
         initComponents();
         conectar();
         TablaClientes();
     }
+
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
@@ -52,9 +53,9 @@ public class ClienteP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
+
     public void TablaClientes() {
         DefaultTableModel miModelo = new DefaultTableModel();
-        //titulos
         miModelo.addColumn("ID");
         miModelo.addColumn("Nombre");
         miModelo.addColumn("Apellido");
@@ -68,8 +69,42 @@ public class ClienteP extends javax.swing.JPanel {
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
         tablaClientes.setModel(miModelo);
-
         tablaClientes.setRowHeight(30);
+        String sentenciaSQL = "SELECT * FROM clientes";
+        try {
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentenciaSQL);
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+                datos[6] = rs.getString(7);
+                datos[7] = rs.getString(8);
+                datos[8] = rs.getString(9);
+                datos[9] = rs.getString(10);
+                datos[10] = "";
+                datos[11] = "";
+                miModelo.addRow(datos);
+            }
+            tablaClientes.setModel(miModelo);
+        } catch (SQLException ex) {
+            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        tablaClientes.setModel(miModelo);
+        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/edit.png"));
+        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 10));
+
+        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/trash.png"));
+        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 11));
+    }
+
+    public void actualizarTabla() {
+        DefaultTableModel miModelo = (DefaultTableModel) tablaClientes.getModel();
+        miModelo.setRowCount(0);
+
         String sentenciaSQL = "SELECT * FROM clientes";
 
         try {
@@ -90,49 +125,11 @@ public class ClienteP extends javax.swing.JPanel {
                 datos[11] = "";
                 miModelo.addRow(datos);
             }
-            tablaClientes.setModel(miModelo);
-
         } catch (SQLException ex) {
-            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        tablaClientes.setModel(miModelo);
-
-        // Agrega los botones con imágenes
-        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/edit.png"));
-        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 10));
-
-        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/trash.png"));
-        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 11));
     }
-    public void actualizarTabla() {
-    DefaultTableModel miModelo = (DefaultTableModel) tablaClientes.getModel();
-    miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "SELECT * FROM clientes";
-
-    try {
-        st = con.createStatement();
-        ResultSet rs = st.executeQuery(sentenciaSQL);
-        while (rs.next()) {
-            datos[0] = rs.getString(1);
-            datos[1] = rs.getString(2);
-            datos[2] = rs.getString(3);
-            datos[3] = rs.getString(4);
-            datos[4] = rs.getString(5);
-            datos[5] = rs.getString(6);
-            datos[6] = rs.getString(7);
-            datos[7] = rs.getString(8);
-            datos[8] = rs.getString(9);
-            datos[9] = rs.getString(10);
-            datos[10] = "";
-            datos[11] = "";
-            miModelo.addRow(datos);
-        }
-    } catch (SQLException ex) {
-        Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -141,11 +138,13 @@ public class ClienteP extends javax.swing.JPanel {
             setBorderPainted(false);
             setContentAreaFilled(false);
         }
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             return this;
         }
     }
+
     // Clase para editar celdas con botones
     class ButtonEditor extends DefaultCellEditor {
 
@@ -170,6 +169,7 @@ public class ClienteP extends javax.swing.JPanel {
                 }
             });
         }
+
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.table = table;
@@ -185,7 +185,21 @@ public class ClienteP extends javax.swing.JPanel {
 
                 if (columnIndex == 10) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
+                    JFClientes ICli = new JFClientes();
+                    ICli.setVisible(true);
+                    
                     // Aquí puedes abrir un formulario para editar el registro
+                    /*try {
+                        PreparedStatement ps = con.prepareStatement("UPDATE Alumnos SET nombre = ?, especialidad = ? WHERE matricula = ?");
+                        ps.setString(3, obj.getMatricula());
+                        ps.setString(1, obj.getNombre());
+                        ps.setString(2, obj.getEspecialidad());
+                        int filasAfectadas = ps.executeUpdate();
+                        System.out.println("Número de filas afectadas: " + filasAfectadas);
+                    } catch (SQLException sqle) {
+                        System.out.println(sqle.getMessage());
+                        sqle.printStackTrace();
+                    }*/
                 } else if (columnIndex == 11) {
                     JOptionPane.showMessageDialog(button, "Eliminando " + id);
                     try {
@@ -194,7 +208,7 @@ public class ClienteP extends javax.swing.JPanel {
                         ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
                         System.out.println("Número de filas afectadas: " + filasAfectadas);
-                        
+
                         SwingUtilities.invokeLater(() -> actualizarTabla());
                     } catch (SQLException sqle) {
                         System.out.println(sqle.getMessage());
@@ -219,7 +233,6 @@ public class ClienteP extends javax.swing.JPanel {
             return true;
         }
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
