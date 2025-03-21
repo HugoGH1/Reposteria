@@ -25,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import static repostería.JFPostres.lblTituloPostre;
 
 /**
  *
@@ -164,7 +165,10 @@ public class PostreP extends javax.swing.JPanel {
 
                 if (columnIndex == 4) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
-                    // Aquí puedes abrir un formulario para editar el registro
+                    JFPostres IPos = new JFPostres();
+                    IPos.setVisible(true);
+                    IPos.rellenarDatosPostres(id);
+                    lblTituloPostre.setText("Actualizar postre");
                 } else if (columnIndex == 5) {
                     JOptionPane.showMessageDialog(button, "Eliminando " + id);
                     try {
@@ -250,6 +254,7 @@ public class PostreP extends javax.swing.JPanel {
     private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
         JFPostres IPos = new JFPostres();
         IPos.setVisible(true);
+        lblTituloPostre.setText("Registrar postre");
     }//GEN-LAST:event_btnInsertarActionPerformed
 
 
