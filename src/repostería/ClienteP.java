@@ -25,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import static repostería.JFClientes.lblTitulo;
 import static repostería.PostreP.st;
 import static repostería.PostreP.tablaPostre;
 
@@ -188,7 +189,8 @@ public class ClienteP extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFClientes ICli = new JFClientes();
                     ICli.setVisible(true);
-                    ICli.rellenar(id);
+                    lblTitulo.setText("Actualizar cliente");
+                    ICli.rellenarDatosCliente(id);
                     
                 } else if (columnIndex == 11) {
                     JOptionPane.showMessageDialog(button, "Eliminando " + id);
@@ -204,8 +206,6 @@ public class ClienteP extends javax.swing.JPanel {
                         System.out.println(sqle.getMessage());
                         sqle.printStackTrace();
                     }
-
-                    // miModelo.removeRow(row); // Elimina la fila visualmente (falta eliminar de BD)
                 }
             }
             clicked = false;
@@ -235,17 +235,17 @@ public class ClienteP extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnAltaCliente = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
 
         jScrollPane1.setViewportView(tablaClientes);
 
-        jButton1.setText("+");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAltaCliente.setText("+");
+        btnAltaCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAltaClienteActionPerformed(evt);
             }
         });
 
@@ -257,28 +257,29 @@ public class ClienteP extends javax.swing.JPanel {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 869, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(148, 148, 148)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnAltaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaClienteActionPerformed
         JFClientes ICli = new JFClientes();
         ICli.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        lblTitulo.setText("Registrar cliente");
+    }//GEN-LAST:event_btnAltaClienteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnAltaCliente;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaClientes;
     // End of variables declaration//GEN-END:variables
