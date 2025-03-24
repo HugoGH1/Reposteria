@@ -77,9 +77,13 @@ public class PostreP extends javax.swing.JPanel {
                 datos[5] = "";
                 miModelo.addRow(datos); }
             tablaPostre.setModel(miModelo);
+            
+            tablaPostre.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablaPostre.getColumnModel().getColumn(0).setMinWidth(0);
+            tablaPostre.getColumnModel().getColumn(0).setPreferredWidth(0);
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);}
-        tablaPostre.setModel(miModelo);
+        
         tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/edit.png"));
         tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 4));
         tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/trash.png"));
@@ -220,9 +224,17 @@ public class PostreP extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(950, 720));
         setPreferredSize(new java.awt.Dimension(950, 720));
 
+        tablaPostre.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
+        tablaPostre.setForeground(new java.awt.Color(51, 51, 51));
+        tablaPostre.setFocusable(false);
+        tablaPostre.setRowHeight(32);
+        tablaPostre.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaPostre.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(tablaPostre);
 
-        btnInsertar.setText("+");
+        btnInsertar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/agregar.png"))); // NOI18N
+        btnInsertar.setBorderPainted(false);
+        btnInsertar.setContentAreaFilled(false);
         btnInsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInsertarActionPerformed(evt);
@@ -236,18 +248,18 @@ public class PostreP extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 860, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(54, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(78, 78, 78)
+                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -4,7 +4,9 @@
  */
 package repostería;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -22,8 +24,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import static repostería.JFClientes.lblTitulo;
 import static repostería.PostreP.st;
@@ -40,11 +45,13 @@ public class ClienteP extends javax.swing.JPanel {
     String id;
     private Connection con = null;
     String[] datos = new String[12];
-
+    JTableHeader header = new JTableHeader();
     public ClienteP() {
         initComponents();
         conectar();
         TablaClientes();
+        header = tablaClientes.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer());
     }
 
     public void conectar() {
@@ -56,22 +63,30 @@ public class ClienteP extends javax.swing.JPanel {
         }
     }
 
+    DefaultTableModel miModelo = new DefaultTableModel(){
+        
+        @Override
+        public boolean isCellEditable(int row, int column){
+            return column == 10 || column == 11;
+        }
+    };
+    
     public void TablaClientes() {
-        DefaultTableModel miModelo = new DefaultTableModel();
         miModelo.addColumn("ID");
         miModelo.addColumn("Nombre");
         miModelo.addColumn("Apellido");
-        miModelo.addColumn("Número Telefónico");
+        miModelo.addColumn("Teléfono");
         miModelo.addColumn("Calle");
-        miModelo.addColumn("NumeroExterior");
+        miModelo.addColumn("Num. Exterior");
         miModelo.addColumn("Colonia");
         miModelo.addColumn("CP");
-        miModelo.addColumn("# de Pedidos");
+        miModelo.addColumn("Num. Pedidos");
         miModelo.addColumn("Postre fav");
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
+        
         tablaClientes.setModel(miModelo);
-        tablaClientes.setRowHeight(30);
+        
         String sentenciaSQL = "SELECT * FROM clientes";
         try {
             st = con.createStatement();
@@ -92,15 +107,19 @@ public class ClienteP extends javax.swing.JPanel {
                 miModelo.addRow(datos);
             }
             tablaClientes.setModel(miModelo);
+            tablaClientes.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablaClientes.getColumnModel().getColumn(0).setMinWidth(0);
+            tablaClientes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tablaClientes.setModel(miModelo);
-        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/edit.png"));
-        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 10));
 
-        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/trash.png"));
-        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 11));
+        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/lapiz.png"));
+        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 10));
+
+        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/borrar.png"));
+        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 11));
     }
 
     public void actualizarTabla() {
@@ -135,14 +154,18 @@ public class ClienteP extends javax.swing.JPanel {
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
-            setOpaque(true);
+            setOpaque(false);
             setIcon(new ImageIcon(getClass().getResource(iconPath)));
             setBorderPainted(false);
             setContentAreaFilled(false);
+            setFocusPainted(false);
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+                boolean hasFocus, int row, int column) {
+            
+            setBackground(new Color(0,0,0,0));
             return this;
         }
     }
@@ -160,7 +183,7 @@ public class ClienteP extends javax.swing.JPanel {
             super(checkBox);
             this.columnIndex = columnIndex;
             button = new JButton(new ImageIcon(getClass().getResource(iconPath)));
-            button.setOpaque(true);
+            button.setOpaque(false);
             button.setBorderPainted(false);
             button.setContentAreaFilled(false);
 
@@ -191,20 +214,18 @@ public class ClienteP extends javax.swing.JPanel {
                     ICli.setVisible(true);
                     lblTitulo.setText("Actualizar cliente");
                     ICli.rellenarDatosCliente(id);
-                    
+
                 } else if (columnIndex == 11) {
-                    JOptionPane.showMessageDialog(button, "Eliminando " + id);
-                    try {
-                        PreparedStatement ps = con.prepareStatement("DELETE FROM clientes WHERE idCliente = ?");
-
-                        ps.setString(1, id);
-                        int filasAfectadas = ps.executeUpdate();
-                        System.out.println("Número de filas afectadas: " + filasAfectadas);
-
-                        SwingUtilities.invokeLater(() -> actualizarTabla());
-                    } catch (SQLException sqle) {
-                        System.out.println(sqle.getMessage());
-                        sqle.printStackTrace();
+                    int resp = JOptionPane.showConfirmDialog(null, "" + "¿Quieres continuar?", "¡Estás a punto de eliminar este cliente!", JOptionPane.YES_NO_OPTION);
+                    if (resp == 0) { // respuesta NO
+                        try {
+                            PreparedStatement ps = con.prepareStatement("DELETE FROM clientes WHERE idCliente = ?");
+                            ps.setString(1, id);
+                            SwingUtilities.invokeLater(() -> actualizarTabla());
+                        } catch (SQLException sqle) {
+                            System.out.println(sqle.getMessage());
+                            sqle.printStackTrace();
+                        }
                     }
                 }
             }
@@ -235,14 +256,32 @@ public class ClienteP extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
-        btnAltaCliente = new javax.swing.JButton();
+        btnAltaCliente = new Components.Button();
 
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
 
+        tablaClientes.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
+        tablaClientes.setForeground(new java.awt.Color(51, 51, 51));
+        tablaClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tablaClientes.setFocusable(false);
+        tablaClientes.setGridColor(new java.awt.Color(204, 204, 204));
+        tablaClientes.setRowHeight(32);
+        tablaClientes.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaClientes.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(tablaClientes);
 
-        btnAltaCliente.setText("+");
+        btnAltaCliente.setText("Agregar Nuevo");
+        btnAltaCliente.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnAltaCliente.setRadius(20);
+        btnAltaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAltaClienteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAltaClienteMouseExited(evt);
+            }
+        });
         btnAltaCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAltaClienteActionPerformed(evt);
@@ -254,20 +293,20 @@ public class ClienteP extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 869, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(51, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(148, 148, 148)
-                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(107, 107, 107)
+                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -277,9 +316,42 @@ public class ClienteP extends javax.swing.JPanel {
         lblTitulo.setText("Registrar cliente");
     }//GEN-LAST:event_btnAltaClienteActionPerformed
 
+    private void btnAltaClienteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaClienteMouseEntered
+        btnAltaCliente.setBackground(new Color(93, 179, 75));
+    }//GEN-LAST:event_btnAltaClienteMouseEntered
+
+    private void btnAltaClienteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaClienteMouseExited
+        btnAltaCliente.setBackground(Color.decode("#4B933C"));
+    }//GEN-LAST:event_btnAltaClienteMouseExited
+
+    
+    private void EstilosHeader(JTable tabla){
+        //tabla.getTableHeader().setFont();
+        tabla.getTableHeader().setBackground(Color.decode("#E18D96"));
+        tabla.getTableHeader().setForeground(Color.decode("#FFFFFF"));
+        
+    }
+    
+    static class HeaderRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            // Personalizar el renderizador del encabezado para centrar el texto
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setBackground(Color.decode("#E18D96"));
+            setFont(new java.awt.Font("Quicksand SemiBold", 0, 14));
+            setForeground(Color.WHITE);
+            setPreferredSize(new Dimension(865, 30));
+
+            return this;
+        }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAltaCliente;
+    private Components.Button btnAltaCliente;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaClientes;
     // End of variables declaration//GEN-END:variables
