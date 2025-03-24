@@ -4,7 +4,9 @@
  */
 package repostería;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -22,8 +24,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import static repostería.JFPostres.lblTituloPostre;
 
@@ -38,11 +43,13 @@ public class PostreP extends javax.swing.JPanel {
     public static Statement st;
     private Connection con = null;
     String[] datos = new String[6];
-
+    JTableHeader header = new JTableHeader();
     public PostreP() {
         initComponents();
         conectar();
         TablaPostres();
+        header = tablaPostre.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer());
     }
 
     public void conectar() {
@@ -84,10 +91,10 @@ public class PostreP extends javax.swing.JPanel {
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);}
         
-        tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/edit.png"));
-        tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/edit.png", 4));
-        tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/trash.png"));
-        tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/trash.png", 5));
+        tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/lapiz.png"));
+        tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 4));
+        tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/borrar.png"));
+        tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 5));
     }
 
     public void actualizarTabla() {
@@ -218,7 +225,7 @@ public class PostreP extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaPostre = new javax.swing.JTable();
-        btnInsertar = new javax.swing.JButton();
+        btnInsertar = new Components.Button();
 
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
@@ -229,12 +236,11 @@ public class PostreP extends javax.swing.JPanel {
         tablaPostre.setFocusable(false);
         tablaPostre.setRowHeight(32);
         tablaPostre.setSelectionBackground(new java.awt.Color(243, 209, 220));
-        tablaPostre.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(tablaPostre);
 
-        btnInsertar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/agregar.png"))); // NOI18N
-        btnInsertar.setBorderPainted(false);
-        btnInsertar.setContentAreaFilled(false);
+        btnInsertar.setText("Agregar Nuevo");
+        btnInsertar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnInsertar.setRadius(20);
         btnInsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInsertarActionPerformed(evt);
@@ -249,15 +255,15 @@ public class PostreP extends javax.swing.JPanel {
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(118, 118, 118)
+                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(44, Short.MAX_VALUE))
         );
@@ -266,12 +272,27 @@ public class PostreP extends javax.swing.JPanel {
     private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
         JFPostres IPos = new JFPostres();
         IPos.setVisible(true);
-        lblTituloPostre.setText("Registrar postre");
     }//GEN-LAST:event_btnInsertarActionPerformed
 
+    static class HeaderRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            // Personalizar el renderizador del encabezado para centrar el texto
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setBackground(Color.decode("#E18D96"));
+            setFont(new java.awt.Font("Quicksand SemiBold", 0, 14));
+            setForeground(Color.WHITE);
+            setPreferredSize(new Dimension(865, 30));
+
+            return this;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnInsertar;
+    private Components.Button btnInsertar;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaPostre;
     // End of variables declaration//GEN-END:variables

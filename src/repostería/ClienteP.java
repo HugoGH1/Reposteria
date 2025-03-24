@@ -268,7 +268,6 @@ public class ClienteP extends javax.swing.JPanel {
         tablaClientes.setGridColor(new java.awt.Color(204, 204, 204));
         tablaClientes.setRowHeight(32);
         tablaClientes.setSelectionBackground(new java.awt.Color(243, 209, 220));
-        tablaClientes.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(tablaClientes);
 
         btnAltaCliente.setText("Agregar Nuevo");
@@ -302,8 +301,8 @@ public class ClienteP extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(107, 107, 107)
-                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(109, 109, 109)
+                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(53, Short.MAX_VALUE))

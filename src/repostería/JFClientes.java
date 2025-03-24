@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import static repostería.PostreP.st;
 
@@ -410,6 +411,7 @@ public class JFClientes extends javax.swing.JFrame {
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         this.dispose();
+        //SwingUtilities.invokeLater(() -> actualizarTabla());
         actualizarTabla();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
