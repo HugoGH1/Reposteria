@@ -17,6 +17,7 @@ public class Main extends javax.swing.JFrame {
         PostreP postres = new PostreP();
         ClienteP clientes = new ClienteP();
         MateriaPrimaP materiasprimas = new MateriaPrimaP();
+        PedidosP pedidos = new PedidosP();
     /**
      * Creates new form Main
      */
@@ -33,7 +34,8 @@ public class Main extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         btnPostres = new javax.swing.JButton();
         btnClientes = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnMateriasPrimas = new javax.swing.JButton();
+        btnPedidos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1250, 720));
@@ -106,21 +108,37 @@ public class Main extends javax.swing.JFrame {
         });
         jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 300, 90));
 
-        jButton1.setText("MateriasPrimas");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnMateriasPrimas.setText("MateriasPrimas");
+        btnMateriasPrimas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton1MouseEntered(evt);
+                btnMateriasPrimasMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton1MouseExited(evt);
+                btnMateriasPrimasMouseExited(evt);
             }
         });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnMateriasPrimas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnMateriasPrimasActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 400, -1, -1));
+        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 400, -1, -1));
+
+        btnPedidos.setText("Pedidos");
+        btnPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnPedidosMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnPedidosMouseExited(evt);
+            }
+        });
+        btnPedidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPedidosActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 510, -1, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
 
@@ -174,22 +192,39 @@ public class Main extends javax.swing.JFrame {
         MouseExitedButtons(btnClientes);
     }//GEN-LAST:event_btnClientesMouseExited
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnMateriasPrimasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMateriasPrimasActionPerformed
         content.removeAll();
         content.add(materiasprimas, BorderLayout.CENTER);
         content.revalidate();
         content.repaint(); 
         materiasprimas.setSize(1000,720);
         materiasprimas.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnMateriasPrimasActionPerformed
 
-    private void jButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseEntered
-        MouseEnteredButtons(jButton1);
-    }//GEN-LAST:event_jButton1MouseEntered
+    private void btnMateriasPrimasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMateriasPrimasMouseEntered
+        MouseEnteredButtons(btnMateriasPrimas);
+    }//GEN-LAST:event_btnMateriasPrimasMouseEntered
 
-    private void jButton1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseExited
-         MouseExitedButtons(jButton1);
-    }//GEN-LAST:event_jButton1MouseExited
+    private void btnMateriasPrimasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMateriasPrimasMouseExited
+         MouseExitedButtons(btnMateriasPrimas);
+    }//GEN-LAST:event_btnMateriasPrimasMouseExited
+
+    private void btnPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedidosActionPerformed
+        content.removeAll();
+        content.add(pedidos, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint(); 
+        pedidos.setSize(1000,720);
+        pedidos.setVisible(true);
+    }//GEN-LAST:event_btnPedidosActionPerformed
+
+    private void btnPedidosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPedidosMouseEntered
+        MouseEnteredButtons(btnPedidos);
+    }//GEN-LAST:event_btnPedidosMouseEntered
+
+    private void btnPedidosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPedidosMouseExited
+        MouseExitedButtons(btnPedidos);
+    }//GEN-LAST:event_btnPedidosMouseExited
 
     
     public void MouseExitedButtons(JButton button){
@@ -240,9 +275,10 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClientes;
+    private javax.swing.JButton btnMateriasPrimas;
+    private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnPostres;
     private javax.swing.JPanel content;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
