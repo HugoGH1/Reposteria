@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame {
         PostreP postres = new PostreP();
         ClienteP clientes = new ClienteP();
+        MateriaPrimaP materiasprimas = new MateriaPrimaP();
     /**
      * Creates new form Main
      */
@@ -32,6 +33,7 @@ public class Main extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         btnPostres = new javax.swing.JButton();
         btnClientes = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1250, 720));
@@ -104,6 +106,22 @@ public class Main extends javax.swing.JFrame {
         });
         jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 300, 90));
 
+        jButton1.setText("MateriasPrimas");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jButton1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jButton1MouseExited(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 400, -1, -1));
+
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -156,6 +174,23 @@ public class Main extends javax.swing.JFrame {
         MouseExitedButtons(btnClientes);
     }//GEN-LAST:event_btnClientesMouseExited
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        content.removeAll();
+        content.add(materiasprimas, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint(); 
+        materiasprimas.setSize(1000,720);
+        materiasprimas.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseEntered
+        MouseEnteredButtons(jButton1);
+    }//GEN-LAST:event_jButton1MouseEntered
+
+    private void jButton1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseExited
+         MouseExitedButtons(jButton1);
+    }//GEN-LAST:event_jButton1MouseExited
+
     
     public void MouseExitedButtons(JButton button){
         button.setBackground(Color.decode("#DA5F80"));
@@ -207,6 +242,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnPostres;
     private javax.swing.JPanel content;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
