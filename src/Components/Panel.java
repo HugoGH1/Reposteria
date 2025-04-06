@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
-public class Panel extends JPanel {
-
+public class Panel extends JPanel { // Calendario Inicio
+ 
     private Color backgroundColor = new Color(255, 255, 255);
     private Color borderColor = new Color(200, 200, 200);
     private int radius = 20;

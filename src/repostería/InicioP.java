@@ -44,7 +44,6 @@ public class InicioP extends javax.swing.JPanel {
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
-            System.out.println("Conexion Correcta");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "conectar");
         }
