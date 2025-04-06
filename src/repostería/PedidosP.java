@@ -32,7 +32,7 @@ import static repostería.JFPedidos.lblTituloP;
  * @author Carolina
  */
 public class PedidosP extends javax.swing.JPanel {
-     PreparedStatement ps;
+    PreparedStatement ps;
     public static Statement st;
     String id;
     private Connection con = null;
