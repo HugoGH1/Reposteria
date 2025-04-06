@@ -6,23 +6,30 @@ package repostería;
 
 import java.awt.BorderLayout;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author hecto
- */
+
 public class Main extends javax.swing.JFrame {
-        PostreP postres = new PostreP();
-        ClienteP clientes = new ClienteP();
-        MateriaPrimaP materiasprimas = new MateriaPrimaP();
-        PedidosP pedidos = new PedidosP();
-    /**
-     * Creates new form Main
-     */
+
+    PostreP postres = new PostreP();
+    ClienteP clientes = new ClienteP();
+    MateriaPrimaP materiasprimas = new MateriaPrimaP();
+    PedidosP pedidos = new PedidosP();
+    InicioP inicio = new InicioP();
+    
     public Main() {
         initComponents();
+        LocalDate fecha = LocalDate.now();
+        content.removeAll();
+        content.add(inicio, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        inicio.setSize(1000, 720);
+        inicio.setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,6 +43,7 @@ public class Main extends javax.swing.JFrame {
         btnClientes = new javax.swing.JButton();
         btnMateriasPrimas = new javax.swing.JButton();
         btnPedidos = new javax.swing.JButton();
+        btnInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1250, 720));
@@ -83,7 +91,7 @@ public class Main extends javax.swing.JFrame {
                 btnPostresActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 300, 90));
+        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 300, 90));
 
         btnClientes.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnClientes.setForeground(new java.awt.Color(255, 255, 255));
@@ -106,9 +114,13 @@ public class Main extends javax.swing.JFrame {
                 btnClientesActionPerformed(evt);
             }
         });
-        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 300, 90));
+        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 300, 90));
 
-        btnMateriasPrimas.setText("MateriasPrimas");
+        btnMateriasPrimas.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnMateriasPrimas.setForeground(new java.awt.Color(255, 255, 255));
+        btnMateriasPrimas.setText("MATERIA PRIMA");
+        btnMateriasPrimas.setBorderPainted(false);
+        btnMateriasPrimas.setContentAreaFilled(false);
         btnMateriasPrimas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnMateriasPrimasMouseEntered(evt);
@@ -122,9 +134,13 @@ public class Main extends javax.swing.JFrame {
                 btnMateriasPrimasActionPerformed(evt);
             }
         });
-        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 400, -1, -1));
+        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 490, 300, 90));
 
-        btnPedidos.setText("Pedidos");
+        btnPedidos.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnPedidos.setForeground(new java.awt.Color(255, 255, 255));
+        btnPedidos.setText("PEDIDOS");
+        btnPedidos.setBorderPainted(false);
+        btnPedidos.setContentAreaFilled(false);
         btnPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnPedidosMouseEntered(evt);
@@ -138,7 +154,28 @@ public class Main extends javax.swing.JFrame {
                 btnPedidosActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 510, -1, -1));
+        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 400, 300, 90));
+
+        btnInicio.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnInicio.setForeground(new java.awt.Color(255, 255, 255));
+        btnInicio.setText("INICIO");
+        btnInicio.setBorderPainted(false);
+        btnInicio.setContentAreaFilled(false);
+        btnInicio.setPreferredSize(new java.awt.Dimension(300, 90));
+        btnInicio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnInicioMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnInicioMouseExited(evt);
+            }
+        });
+        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInicioActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 130, -1, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
 
@@ -160,8 +197,8 @@ public class Main extends javax.swing.JFrame {
         content.removeAll();
         content.add(postres, BorderLayout.CENTER);
         content.revalidate();
-        content.repaint(); 
-        postres.setSize(1000,720);
+        content.repaint();
+        postres.setSize(1000, 720);
         postres.setVisible(true);
 
     }//GEN-LAST:event_btnPostresActionPerformed
@@ -170,8 +207,8 @@ public class Main extends javax.swing.JFrame {
         content.removeAll();
         content.add(clientes, BorderLayout.CENTER);
         content.revalidate();
-        content.repaint(); 
-        clientes.setSize(1000,720);
+        content.repaint();
+        clientes.setSize(1000, 720);
         clientes.setVisible(true);
 
     }//GEN-LAST:event_btnClientesActionPerformed
@@ -196,8 +233,8 @@ public class Main extends javax.swing.JFrame {
         content.removeAll();
         content.add(materiasprimas, BorderLayout.CENTER);
         content.revalidate();
-        content.repaint(); 
-        materiasprimas.setSize(1000,720);
+        content.repaint();
+        materiasprimas.setSize(1000, 720);
         materiasprimas.setVisible(true);
     }//GEN-LAST:event_btnMateriasPrimasActionPerformed
 
@@ -206,15 +243,15 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMateriasPrimasMouseEntered
 
     private void btnMateriasPrimasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMateriasPrimasMouseExited
-         MouseExitedButtons(btnMateriasPrimas);
+        MouseExitedButtons(btnMateriasPrimas);
     }//GEN-LAST:event_btnMateriasPrimasMouseExited
 
     private void btnPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedidosActionPerformed
         content.removeAll();
         content.add(pedidos, BorderLayout.CENTER);
         content.revalidate();
-        content.repaint(); 
-        pedidos.setSize(1000,720);
+        content.repaint();
+        pedidos.setSize(1000, 720);
         pedidos.setVisible(true);
     }//GEN-LAST:event_btnPedidosActionPerformed
 
@@ -226,18 +263,35 @@ public class Main extends javax.swing.JFrame {
         MouseExitedButtons(btnPedidos);
     }//GEN-LAST:event_btnPedidosMouseExited
 
-    
-    public void MouseExitedButtons(JButton button){
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        content.removeAll();
+        content.add(inicio, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        inicio.setSize(1000, 720);
+        inicio.setVisible(true);
+    }//GEN-LAST:event_btnInicioActionPerformed
+
+    private void btnInicioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInicioMouseEntered
+        MouseEnteredButtons(btnInicio);
+    }//GEN-LAST:event_btnInicioMouseEntered
+
+    private void btnInicioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInicioMouseExited
+        MouseExitedButtons(btnInicio);
+    }//GEN-LAST:event_btnInicioMouseExited
+
+    public void MouseExitedButtons(JButton button) {
         button.setBackground(Color.decode("#DA5F80"));
         button.setForeground(Color.decode("#FFFFFF"));
         button.setOpaque(true);
     }
-    
-    public void MouseEnteredButtons(JButton button){
+
+    public void MouseEnteredButtons(JButton button) {
         button.setBackground(Color.decode("#e889a4"));
         button.setForeground(Color.decode("#DA5F80"));
         button.setOpaque(true);
     }
+
     /**
      * @param args the command line arguments
      */
@@ -275,6 +329,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClientes;
+    private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnMateriasPrimas;
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnPostres;
