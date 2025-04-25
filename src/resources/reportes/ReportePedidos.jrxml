@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="800" pageHeight="842" columnWidth="760" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="093052ec-49c3-4608-a13e-dc3789c8cd57">
+	<property name="ireport.zoom" value="1.000000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+    pe.idPedido,
+    c.idCliente,
+    CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,
+    p.Nombre AS Postre,
+    pe.Cantidad,
+    pe.Costo,
+    pe.FechaEntrega,
+    te.Tipo AS Entrega
+FROM
+    pedidos pe
+INNER JOIN
+    clientes c ON pe.idCliente = c.idCliente
+INNER JOIN
+    postres p ON pe.idPostre = p.idPostre
+INNER JOIN
+    tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega
+WHERE
+    pe.FechaEntrega < CURRENT_DATE
+ORDER BY
+    pe.FechaEntrega DESC;]]>
+	</queryString>
+	<field name="idPedido" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="idCliente" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Cliente" class="java.lang.String"/>
+	<field name="Postre" class="java.lang.String"/>
+	<field name="Cantidad" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Costo" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FechaEntrega" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Entrega" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="208" y="0" width="415" height="59" uuid="0755f072-60e7-4db5-bf63-8af971d69229"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="30"/>
+				</textElement>
+				<text><![CDATA[Reporte Pedidos Entregados]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="6" y="2" width="61" height="20" uuid="9be1eabd-5d2b-4fc6-badf-54f8aeee5c47"/>
+				<text><![CDATA[idPedido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="2" width="196" height="20" uuid="780088e7-9dd9-49fa-b4b6-e8d2e54a996c"/>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="2" width="122" height="20" uuid="0013724a-e4eb-45ef-9716-a05995db3025"/>
+				<text><![CDATA[Postre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="2" width="60" height="20" uuid="0a5f7da1-7bd0-466a-b47d-5ce4c2cfce7f"/>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="498" y="2" width="72" height="20" uuid="e2989b24-4203-40e8-8e69-bb3e1fee91d8"/>
+				<text><![CDATA[Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="579" y="2" width="87" height="20" uuid="f7e270c9-9506-49bb-a98a-68bde90d7833"/>
+				<text><![CDATA[FechaEntrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="676" y="2" width="84" height="20" uuid="1c7b0e7e-b3de-4dcc-a221-b73441d10796"/>
+				<text><![CDATA[Entrega]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="6" y="13" width="61" height="20" uuid="990fb430-6cc9-49b8-a693-41a70a052e0c"/>
+				<textFieldExpression><![CDATA[$F{idPedido}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="78" y="13" width="196" height="20" uuid="98afd029-7a1c-450f-ac93-c8c94c09fcd3"/>
+				<textFieldExpression><![CDATA[$F{Cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="285" y="13" width="122" height="20" uuid="bdbb9148-1188-492a-9269-ae6594991d34"/>
+				<textFieldExpression><![CDATA[$F{Postre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="422" y="14" width="60" height="20" uuid="fa32d731-e7b7-417d-a07b-c38aac92fd9d"/>
+				<textFieldExpression><![CDATA[$F{Cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="498" y="14" width="72" height="20" uuid="8e9552a4-181e-4285-8ecf-14ffd6972c4a"/>
+				<textFieldExpression><![CDATA[$F{Costo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="579" y="14" width="87" height="20" uuid="a967203e-7646-4112-8510-c0b3c5c7295c"/>
+				<textFieldExpression><![CDATA[$F{FechaEntrega}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="676" y="14" width="84" height="20" uuid="c350fc85-c4ef-4dca-91c0-cd8fcc8ddd62"/>
+				<textFieldExpression><![CDATA[$F{Entrega}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

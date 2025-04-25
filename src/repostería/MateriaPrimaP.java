@@ -42,16 +42,17 @@ import static repostería.PostreP.tablaPostre;
 public class MateriaPrimaP extends javax.swing.JPanel {
 
     PreparedStatement ps;
-    public static Statement st;
+    static Statement st;
     String id;
-    private Connection con = null;
-    String[] datos = new String[8];
+    static Connection con = null;
+    static String[] datos = new String[8];
     JTableHeader header = new JTableHeader();
     
     public MateriaPrimaP() {
         initComponents();
         conectar();
         TablaMaterias();
+        actualizarTabla();
         header = tablaMaterias.getTableHeader();
         header.setDefaultRenderer(new MateriaPrimaP.HeaderRenderer());
     }
@@ -114,7 +115,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         tablaMaterias.getColumnModel().getColumn(7).setCellRenderer(new MateriaPrimaP.ButtonRenderer("/Images/borrar.png"));
         tablaMaterias.getColumnModel().getColumn(7).setCellEditor(new MateriaPrimaP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 7));
     }
-    public void actualizarTabla() {
+    public static void actualizarTabla() {
         DefaultTableModel miModelo = (DefaultTableModel) tablaMaterias.getModel();
         miModelo.setRowCount(0);
 

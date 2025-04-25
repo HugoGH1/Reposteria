@@ -7,6 +7,7 @@ package repostería;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,8 +44,9 @@ public class PostreP extends javax.swing.JPanel {
     PreparedStatement ps;
     public static Statement st;
     private Connection con = null;
-    String[] datos = new String[6];
+    String[] datos = new String[7];
     JTableHeader header = new JTableHeader();
+
     public PostreP() {
         initComponents();
         conectar();
@@ -69,6 +72,7 @@ public class PostreP extends javax.swing.JPanel {
         miModelo.addColumn("Cantidad");
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
+        miModelo.addColumn("Hornear");
         tablaPostre.setModel(miModelo);
         tablaPostre.setRowHeight(30);
         String sentenciaSQL = "SELECT * FROM postres";
@@ -82,19 +86,24 @@ public class PostreP extends javax.swing.JPanel {
                 datos[3] = rs.getString(4);
                 datos[4] = "";
                 datos[5] = "";
-                miModelo.addRow(datos); }
+                datos[6] = "";
+                miModelo.addRow(datos);
+            }
             tablaPostre.setModel(miModelo);
-            
+
             tablaPostre.getColumnModel().getColumn(0).setMaxWidth(0);
             tablaPostre.getColumnModel().getColumn(0).setMinWidth(0);
             tablaPostre.getColumnModel().getColumn(0).setPreferredWidth(0);
         } catch (SQLException ex) {
-            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);}
-        
+            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         tablaPostre.getColumnModel().getColumn(4).setCellRenderer(new PostreP.ButtonRenderer("/Images/lapiz.png"));
         tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 4));
         tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/borrar.png"));
         tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 5));
+        tablaPostre.getColumnModel().getColumn(6).setCellRenderer(new PostreP.ButtonRenderer("/Images/borrar.png"));
+        tablaPostre.getColumnModel().getColumn(6).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 6));
     }
 
     public void actualizarTabla() {
@@ -113,6 +122,7 @@ public class PostreP extends javax.swing.JPanel {
                 datos[3] = rs.getString(4);
                 datos[4] = "";
                 datos[5] = "";
+                datos[6] = "";
                 miModelo.addRow(datos);
             }
         } catch (SQLException ex) {
@@ -196,6 +206,147 @@ public class PostreP extends javax.swing.JPanel {
                         //sqle.printStackTrace();
                     }
                     // miModelo.removeRow(row); // Elimina la fila visualmente (falta eliminar de BD)
+                } else if (columnIndex == 6) {
+                    JOptionPane.showMessageDialog(button, "Horneando " + id);
+                    ResultSet rs;
+                    PreparedStatement pstm;
+                    String sentencia = "SELECT idMateriasPrimas, Cantidad FROM recetas WHERE idPostre = ?";
+                    try {
+                        pstm = con.prepareStatement(sentencia);
+                        pstm.setString(1, id);
+                        rs = pstm.executeQuery();
+                        ResultSet rs1 = null;
+                        boolean todoCorrecto = true;
+                        int contador = 0;
+                        int conta = 0;
+                        try {
+                            con.setAutoCommit(false);
+                            while (rs.next()) {
+                                System.out.println(rs.getString("cantidad"));
+
+                                PreparedStatement pstm1;
+                                String sentencia1 = "SELECT stock FROM materiasprimas WHERE idmateriasprimas = ?";
+                                try {
+                                    pstm1 = con.prepareStatement(sentencia1);
+                                    pstm1.setString(1, rs.getString("idmateriasprimas"));
+                                    rs1 = pstm1.executeQuery();
+                                    List<ActualizacionStock> actualizaciones = new ArrayList<>();
+
+                                    while (rs1.next()) {
+                                        int stock = Integer.parseInt(rs1.getString("stock").trim());
+                                        int cantidad = Integer.parseInt(rs.getString("cantidad").trim());
+                                        int resto = stock - cantidad;
+
+                                        if (resto >= 0) {
+                                            // Guardamos temporalmente lo que se actualizará
+                                            actualizaciones.add(new ActualizacionStock(resto, rs.getString("idmateriasprimas")));
+                                            conta++;
+                                            System.out.println(todoCorrecto);
+                                        } else {
+
+                                            todoCorrecto = false;
+                                            JOptionPane.showMessageDialog(null, "Falta " + Math.abs(resto) + " de la materia prima " + rs.getString("idmateriasprimas"));
+
+                                        }
+                                        contador++;
+                                    }
+                                    if (todoCorrecto == false) {
+                                        break; // Rompe el while externo
+                                    }
+
+                                    if (todoCorrecto && !actualizaciones.isEmpty()) {
+                                        System.out.println(todoCorrecto);
+                                        for (ActualizacionStock act : actualizaciones) {
+                                            String sql = "UPDATE materiasprimas SET stock = ? WHERE idmateriasprimas = ?";
+                                            PreparedStatement ps = con.prepareStatement(sql);
+                                            ps.setInt(1, act.nuevoStock);
+                                            ps.setString(2, act.idMateriaPrima);
+                                            ps.executeUpdate();
+                                            System.out.println(todoCorrecto);
+                                        }
+                                        System.out.println(conta + " " + contador);
+
+                                    } else {
+                                        con.rollback(); // ❌ Cancelamos cualquier posible cambio
+                                        System.out.println("Transacción cancelada.");
+                                    }
+
+                                    // con.setAutoCommit(true); // Restauramos auto-commit
+                                } catch (SQLException sqle) {
+                                    System.out.println(sqle.getMessage());
+                                    sqle.printStackTrace();
+                                }
+                            }
+                        } catch (SQLException sqle) {
+                            System.out.println(sqle.getMessage());
+                            sqle.printStackTrace();
+
+                        } catch (Exception e) {
+                            try {
+                                con.rollback();
+                                con.setAutoCommit(true);
+                            } catch (SQLException se) {
+                                se.printStackTrace();
+                            }
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error al procesar la transacción.");
+                        }
+                        if (todoCorrecto && conta == contador) {
+                            con.commit();
+                            con.setAutoCommit(true);
+                            int suma = 0;
+                            ResultSet rs2;
+                            PreparedStatement pstm2;
+                            String sentencia2 = "SELECT cantidad FROM postres WHERE idPostre = ?";
+                            try {
+                                pstm = con.prepareStatement(sentencia2);
+                                pstm.setString(1, id);
+                                rs2 = pstm.executeQuery();
+                                ResultSet rs3 = null;
+                                try {
+                                    while (rs2.next()) {
+                                        PreparedStatement pstm1;
+                                        String sentencia1 = "SELECT porciones FROM recetas WHERE idpostre = ?";
+                                        try {
+                                            pstm1 = con.prepareStatement(sentencia1);
+                                            pstm1.setString(1, id);
+                                            rs3 = pstm1.executeQuery();
+
+                                            while (rs3.next()) {
+                                                int porciones = Integer.parseInt(rs3.getString("porciones").trim());
+                                                int cantidadP = Integer.parseInt(rs2.getString("cantidad").trim());
+                                                suma = cantidadP + porciones;
+                                            }
+                                            try {
+                                                String sql = "UPDATE postres SET cantidad = ? WHERE idpostre = ?";
+                                                PreparedStatement ps = con.prepareStatement(sql);
+                                                ps.setInt(1, suma);
+                                                ps.setString(2, id);
+                                                ps.executeUpdate();
+                                            } catch (SQLException exs) {
+                                                JOptionPane.showMessageDialog(null, "No se pudo actualizar la cantidad" + exs.getMessage());
+                                            }
+                                        } catch (SQLException ex) {
+                                            JOptionPane.showMessageDialog(null, "Error en consulta de porciones");
+                                        }
+                                    }
+                                } catch (SQLException ex) {
+                                    JOptionPane.showMessageDialog(null, "Error en consulta de cantidad");
+                                }
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null, "Error en consulta de cantidad");
+                            }
+                            SwingUtilities.invokeLater(() -> actualizarTabla());
+                        } else {
+                            con.rollback();
+                            con.setAutoCommit(true);
+                        }// ✅ Confirmamos la transacción
+                        System.out.println(todoCorrecto);
+                        JOptionPane.showMessageDialog(null, "Todos los stocks fueron actualizados correctamente.");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                 }
             }
             clicked = false;
@@ -209,7 +360,8 @@ public class PostreP extends javax.swing.JPanel {
         }
 
         @Override
-        public boolean isCellEditable(EventObject e) {
+        public boolean isCellEditable(EventObject e
+        ) {
             return true;
         }
     }

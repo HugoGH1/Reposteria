@@ -11,6 +11,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 
 public class Main extends javax.swing.JFrame {
@@ -236,6 +237,8 @@ public class Main extends javax.swing.JFrame {
         content.repaint();
         materiasprimas.setSize(1000, 720);
         materiasprimas.setVisible(true);
+        SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+        
     }//GEN-LAST:event_btnMateriasPrimasActionPerformed
 
     private void btnMateriasPrimasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMateriasPrimasMouseEntered
