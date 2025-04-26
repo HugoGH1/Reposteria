@@ -23,8 +23,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import static repostería.JFPedidos.lblTituloP;
 
 /**
@@ -32,13 +39,14 @@ import static repostería.JFPedidos.lblTituloP;
  * @author Carolina
  */
 public class PedidosP extends javax.swing.JPanel {
+
     PreparedStatement ps;
     public static Statement st;
     String id;
     private Connection con = null;
     String[] datos = new String[9];
     JTableHeader header = new JTableHeader();
-    
+
     public PedidosP() {
         initComponents();
         conectar();
@@ -46,6 +54,7 @@ public class PedidosP extends javax.swing.JPanel {
         header = tablaPedidos.getTableHeader();
         header.setDefaultRenderer(new PedidosP.HeaderRenderer());
     }
+
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
@@ -54,13 +63,14 @@ public class PedidosP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
-    DefaultTableModel miModelo = new DefaultTableModel(){
-        
+    DefaultTableModel miModelo = new DefaultTableModel() {
+
         @Override
-        public boolean isCellEditable(int row, int column){
+        public boolean isCellEditable(int row, int column) {
             return column == 7 || column == 8;
         }
     };
+
     public void TablaPedidos() {
         DefaultTableModel miModelo = new DefaultTableModel();
         miModelo.addColumn("ID");
@@ -72,10 +82,10 @@ public class PedidosP extends javax.swing.JPanel {
         miModelo.addColumn("Tipo Entrega");
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
-        
+
         tablaPedidos.setModel(miModelo);
         tablaPedidos.setRowHeight(30);
-        
+
         String sentenciaSQL = "SELECT * FROM pedidos";
         try {
             st = con.createStatement();
@@ -96,7 +106,7 @@ public class PedidosP extends javax.swing.JPanel {
             tablaPedidos.getColumnModel().getColumn(0).setMaxWidth(0);
             tablaPedidos.getColumnModel().getColumn(0).setMinWidth(0);
             tablaPedidos.getColumnModel().getColumn(0).setPreferredWidth(0);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -107,6 +117,7 @@ public class PedidosP extends javax.swing.JPanel {
         tablaPedidos.getColumnModel().getColumn(8).setCellRenderer(new PedidosP.ButtonRenderer("/Images/borrar.png"));
         tablaPedidos.getColumnModel().getColumn(8).setCellEditor(new PedidosP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 8));
     }
+
     public void actualizarTabla() {
         DefaultTableModel miModelo = (DefaultTableModel) tablaPedidos.getModel();
         miModelo.setRowCount(0);
@@ -132,6 +143,7 @@ public class PedidosP extends javax.swing.JPanel {
             Logger.getLogger(PedidosP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -143,10 +155,10 @@ public class PedidosP extends javax.swing.JPanel {
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
-            
-            setBackground(new Color(0,0,0,0));
+
+            setBackground(new Color(0, 0, 0, 0));
             return this;
         }
     }
@@ -182,6 +194,7 @@ public class PedidosP extends javax.swing.JPanel {
             clicked = true;
             return button;
         }
+
         @Override
         public Object getCellEditorValue() {
             if (clicked) {
@@ -207,7 +220,7 @@ public class PedidosP extends javax.swing.JPanel {
                             PreparedStatement ps = con.prepareStatement("DELETE FROM pedidos WHERE idPedido = ?");
                             ps.setString(1, id);
                             int filasAfectadas = ps.executeUpdate();
-            System.out.println("Número de filas afectadas: "+filasAfectadas);
+                            System.out.println("Número de filas afectadas: " + filasAfectadas);
                             SwingUtilities.invokeLater(() -> actualizarTabla());
                         } catch (SQLException sqle) {
                             System.out.println(sqle.getMessage());
@@ -231,7 +244,7 @@ public class PedidosP extends javax.swing.JPanel {
             return true;
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -244,6 +257,7 @@ public class PedidosP extends javax.swing.JPanel {
         btnAltaPedido = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaPedidos = new javax.swing.JTable();
+        btnGenerarPDF = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
@@ -269,29 +283,44 @@ public class PedidosP extends javax.swing.JPanel {
         tablaPedidos.setForeground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setViewportView(tablaPedidos);
 
+        btnGenerarPDF.setBackground(new java.awt.Color(218, 95, 128));
+        btnGenerarPDF.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        btnGenerarPDF.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarPDF.setText("Generar PDF");
+        btnGenerarPDF.setBorderPainted(false);
+        btnGenerarPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarPDFActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnAltaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAltaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGenerarPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(63, 63, 63)
-                .addComponent(btnAltaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAltaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGenerarPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
         );
+
+        btnGenerarPDF.getAccessibleContext().setAccessibleName("btnReporte");
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAltaPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaPedidoActionPerformed
@@ -313,12 +342,34 @@ public class PedidosP extends javax.swing.JPanel {
         btnAltaPedido.setBackground(Color.decode("#4B933C"));
     }//GEN-LAST:event_btnAltaPedidoMouseExited
 
-    private void EstilosHeader(JTable tabla){
+    private void btnGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPDFActionPerformed
+
+        try {
+            JasperReport reporte = null;
+            String path = "src\\resources\\reportes\\ReportePedidos.jasper";
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+            
+            JasperPrint jprint = JasperFillManager.fillReport(reporte,null,con);
+            
+            JasperViewer view = new JasperViewer(jprint, false);
+            
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            
+            view.setVisible(true);
+            
+        } catch (JRException ex) {
+            Logger.getLogger(PedidosP.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("HUBO ERROR EN EL PDF");
+        }
+    }//GEN-LAST:event_btnGenerarPDFActionPerformed
+
+    private void EstilosHeader(JTable tabla) {
         //tabla.getTableHeader().setFont();
         tabla.getTableHeader().setBackground(Color.decode("#E18D96"));
         tabla.getTableHeader().setForeground(Color.decode("#FFFFFF"));
-        
+
     }
+
     static class HeaderRenderer extends DefaultTableCellRenderer {
 
         @Override
@@ -338,6 +389,7 @@ public class PedidosP extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAltaPedido;
+    private javax.swing.JButton btnGenerarPDF;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaPedidos;
     // End of variables declaration//GEN-END:variables

@@ -102,8 +102,8 @@ public class PostreP extends javax.swing.JPanel {
         tablaPostre.getColumnModel().getColumn(4).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 4));
         tablaPostre.getColumnModel().getColumn(5).setCellRenderer(new PostreP.ButtonRenderer("/Images/borrar.png"));
         tablaPostre.getColumnModel().getColumn(5).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 5));
-        tablaPostre.getColumnModel().getColumn(6).setCellRenderer(new PostreP.ButtonRenderer("/Images/borrar.png"));
-        tablaPostre.getColumnModel().getColumn(6).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 6));
+        tablaPostre.getColumnModel().getColumn(6).setCellRenderer(new PostreP.ButtonRenderer("/Images/oven.png"));
+        tablaPostre.getColumnModel().getColumn(6).setCellEditor(new PostreP.ButtonEditor(new JCheckBox(), "/Images/oven.png", 6));
     }
 
     public void actualizarTabla() {
