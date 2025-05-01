@@ -262,10 +262,13 @@ public class ClienteP extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
         btnAltaCliente = new Components.Button();
+        jLabel1 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 194, 209));
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
 
+        tablaClientes.setBackground(new java.awt.Color(252, 228, 236));
         tablaClientes.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaClientes.setForeground(new java.awt.Color(51, 51, 51));
         tablaClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -292,6 +295,10 @@ public class ClienteP extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Quicksand", 1, 84)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(218, 95, 128));
+        jLabel1.setText("CLIENTES");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -302,11 +309,17 @@ public class ClienteP extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(49, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(301, 301, 301))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(109, 109, 109)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -356,6 +369,7 @@ public class ClienteP extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private Components.Button btnAltaCliente;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaClientes;
     // End of variables declaration//GEN-END:variables

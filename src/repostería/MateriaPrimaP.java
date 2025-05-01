@@ -250,9 +250,12 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         btnAltaMateria = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaMaterias = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 194, 209));
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
+        setPreferredSize(new java.awt.Dimension(950, 720));
 
         btnAltaMateria.setBackground(new java.awt.Color(115, 223, 92));
         btnAltaMateria.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
@@ -274,27 +277,39 @@ public class MateriaPrimaP extends javax.swing.JPanel {
 
         tablaMaterias.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaMaterias.setForeground(new java.awt.Color(51, 51, 51));
+        tablaMaterias.setSelectionBackground(new java.awt.Color(243, 209, 220));
         jScrollPane1.setViewportView(tablaMaterias);
+
+        jLabel1.setFont(new java.awt.Font("Quicksand", 1, 84)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(218, 95, 128));
+        jLabel1.setText("MATERIA PRIMA");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 894, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAltaMateria, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAltaMateria, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(53, 53, 53)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAltaMateria, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -342,6 +357,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAltaMateria;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaMaterias;
     // End of variables declaration//GEN-END:variables
