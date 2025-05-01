@@ -45,14 +45,15 @@ public class Main extends javax.swing.JFrame {
         btnMateriasPrimas = new javax.swing.JButton();
         btnPedidos = new javax.swing.JButton();
         btnInicio = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1250, 720));
+        setPreferredSize(new java.awt.Dimension(1250, 750));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        content.setBackground(new java.awt.Color(204, 204, 204));
+        content.setBackground(new java.awt.Color(255, 195, 229));
         content.setMaximumSize(new java.awt.Dimension(1000, 720));
         content.setMinimumSize(new java.awt.Dimension(1000, 720));
 
@@ -64,10 +65,10 @@ public class Main extends javax.swing.JFrame {
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
+            .addGap(0, 750, Short.MAX_VALUE)
         );
 
-        jPanel1.add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 1050, 720));
+        jPanel1.add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 1050, 750));
 
         jPanel2.setBackground(new java.awt.Color(218, 95, 128));
         jPanel2.setForeground(new java.awt.Color(218, 95, 128));
@@ -75,10 +76,13 @@ public class Main extends javax.swing.JFrame {
 
         btnPostres.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnPostres.setForeground(new java.awt.Color(255, 255, 255));
+        btnPostres.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/magdalena.png"))); // NOI18N
         btnPostres.setText("POSTRES");
         btnPostres.setBorderPainted(false);
         btnPostres.setContentAreaFilled(false);
         btnPostres.setFocusPainted(false);
+        btnPostres.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnPostres.setIconTextGap(20);
         btnPostres.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnPostresMouseEntered(evt);
@@ -92,13 +96,16 @@ public class Main extends javax.swing.JFrame {
                 btnPostresActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 300, 90));
+        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 300, 90));
 
         btnClientes.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnClientes.setForeground(new java.awt.Color(255, 255, 255));
+        btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cuenta.png"))); // NOI18N
         btnClientes.setText("CLIENTES");
         btnClientes.setBorderPainted(false);
         btnClientes.setContentAreaFilled(false);
+        btnClientes.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnClientes.setIconTextGap(18);
         btnClientes.setMaximumSize(new java.awt.Dimension(103, 29));
         btnClientes.setMinimumSize(new java.awt.Dimension(103, 29));
         btnClientes.setPreferredSize(new java.awt.Dimension(103, 29));
@@ -115,7 +122,7 @@ public class Main extends javax.swing.JFrame {
                 btnClientesActionPerformed(evt);
             }
         });
-        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 300, 90));
+        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 300, 90));
 
         btnMateriasPrimas.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnMateriasPrimas.setForeground(new java.awt.Color(255, 255, 255));
@@ -135,13 +142,16 @@ public class Main extends javax.swing.JFrame {
                 btnMateriasPrimasActionPerformed(evt);
             }
         });
-        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 490, 300, 90));
+        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 590, 300, 90));
 
         btnPedidos.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnPedidos.setForeground(new java.awt.Color(255, 255, 255));
+        btnPedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bolsa-de-la-compra.png"))); // NOI18N
         btnPedidos.setText("PEDIDOS");
         btnPedidos.setBorderPainted(false);
         btnPedidos.setContentAreaFilled(false);
+        btnPedidos.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnPedidos.setIconTextGap(25);
         btnPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnPedidosMouseEntered(evt);
@@ -155,13 +165,16 @@ public class Main extends javax.swing.JFrame {
                 btnPedidosActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 400, 300, 90));
+        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 300, 90));
 
         btnInicio.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnInicio.setForeground(new java.awt.Color(255, 255, 255));
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Inicio.png"))); // NOI18N
         btnInicio.setText("INICIO");
         btnInicio.setBorderPainted(false);
         btnInicio.setContentAreaFilled(false);
+        btnInicio.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnInicio.setIconTextGap(50);
         btnInicio.setPreferredSize(new java.awt.Dimension(300, 90));
         btnInicio.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -176,9 +189,12 @@ public class Main extends javax.swing.JFrame {
                 btnInicioActionPerformed(evt);
             }
         });
-        jPanel2.add(btnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 130, -1, -1));
+        jPanel2.add(btnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, -1, -1));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 720));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/LogoSweetCake.png"))); // NOI18N
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 190, 230));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 750));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -337,6 +353,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnPostres;
     private javax.swing.JPanel content;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
