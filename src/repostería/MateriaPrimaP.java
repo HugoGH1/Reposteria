@@ -47,15 +47,15 @@ public class MateriaPrimaP extends javax.swing.JPanel {
     static Connection con = null;
     static String[] datos = new String[8];
     JTableHeader header = new JTableHeader();
-    
+
     public MateriaPrimaP() {
         initComponents();
         conectar();
         TablaMaterias();
-        actualizarTabla();
         header = tablaMaterias.getTableHeader();
         header.setDefaultRenderer(new MateriaPrimaP.HeaderRenderer());
     }
+
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
@@ -64,15 +64,15 @@ public class MateriaPrimaP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
-    DefaultTableModel miModelo = new DefaultTableModel(){
-        
+    DefaultTableModel miModelo = new DefaultTableModel() {
+
         @Override
-        public boolean isCellEditable(int row, int column){
+        public boolean isCellEditable(int row, int column) {
             return column == 6 || column == 7;
         }
     };
+
     public void TablaMaterias() {
-        DefaultTableModel miModelo = new DefaultTableModel();
         miModelo.addColumn("ID");
         miModelo.addColumn("Nombre");
         miModelo.addColumn("Categoría");
@@ -81,11 +81,11 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         miModelo.addColumn("Proveedor");
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar");
-        
+
         tablaMaterias.setModel(miModelo);
         tablaMaterias.setRowHeight(30);
-        
-        String sentenciaSQL = "SELECT * FROM materiasprimas";
+
+        String sentenciaSQL = "SELECT mp.idMateriasPrimas,mp.Nombre,cat.Categoria,mp.Stock,um.Unidad,pr.Nombre AS Proveedor FROM materiasprimas mp INNER JOIN categorias cat ON mp.idCategoria = cat.idCategoria INNER JOIN unidadesmedidas um ON mp.idUnidadMedida = um.idUnidadMedida INNER JOIN proveedores pr ON mp.idProveedor = pr.idProveedor ORDER BY mp.Stock DESC";
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -104,7 +104,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
             tablaMaterias.getColumnModel().getColumn(0).setMaxWidth(0);
             tablaMaterias.getColumnModel().getColumn(0).setMinWidth(0);
             tablaMaterias.getColumnModel().getColumn(0).setPreferredWidth(0);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -115,30 +115,38 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         tablaMaterias.getColumnModel().getColumn(7).setCellRenderer(new MateriaPrimaP.ButtonRenderer("/Images/borrar.png"));
         tablaMaterias.getColumnModel().getColumn(7).setCellEditor(new MateriaPrimaP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 7));
     }
+
     public static void actualizarTabla() {
         DefaultTableModel miModelo = (DefaultTableModel) tablaMaterias.getModel();
         miModelo.setRowCount(0);
 
-        String sentenciaSQL = "SELECT * FROM materiasprimas";
+        String sentenciaSQL = "CALL pSelectMateria()";
 
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
             while (rs.next()) {
-                datos[0] = rs.getString(1);
-                datos[1] = rs.getString(2);
-                datos[2] = rs.getString(3);
-                datos[3] = rs.getString(4);
-                datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-                datos[6] = "";
-                datos[7] = "";
+                datos[0] = rs.getString(1); // ID
+                datos[1] = rs.getString(2); // Nombre
+                datos[2] = rs.getString(3); // Categoría
+                datos[3] = rs.getString(4); // Stock
+                datos[4] = rs.getString(5); // Unidad Medida
+                datos[5] = rs.getString(6); // Proveedor
+                datos[6] = "";              // Editar (botón)
+                datos[7] = "";              // Eliminar (botón)
                 miModelo.addRow(datos);
             }
+            tablaMaterias.setModel(miModelo);
+
+            // Ocultar columna ID
+            tablaMaterias.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablaMaterias.getColumnModel().getColumn(0).setMinWidth(0);
+            tablaMaterias.getColumnModel().getColumn(0).setPreferredWidth(0);
         } catch (SQLException ex) {
             Logger.getLogger(MateriaPrimaP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -150,10 +158,10 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
-            
-            setBackground(new Color(0,0,0,0));
+
+            setBackground(new Color(0, 0, 0, 0));
             return this;
         }
     }
@@ -189,6 +197,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
             clicked = true;
             return button;
         }
+
         @Override
         public Object getCellEditorValue() {
             if (clicked) {
@@ -214,7 +223,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
                             PreparedStatement ps = con.prepareStatement("DELETE FROM materiasprimas WHERE idMateriasPrimas = ?");
                             ps.setString(1, id);
                             int filasAfectadas = ps.executeUpdate();
-            System.out.println("Número de filas afectadas: "+filasAfectadas);
+                            System.out.println("Número de filas afectadas: " + filasAfectadas);
                             SwingUtilities.invokeLater(() -> actualizarTabla());
                         } catch (SQLException sqle) {
                             System.out.println(sqle.getMessage());
@@ -238,6 +247,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
             return true;
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -275,14 +285,18 @@ public class MateriaPrimaP extends javax.swing.JPanel {
             }
         });
 
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setFocusable(false);
+
         tablaMaterias.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaMaterias.setForeground(new java.awt.Color(51, 51, 51));
+        tablaMaterias.setFocusable(false);
         tablaMaterias.setSelectionBackground(new java.awt.Color(243, 209, 220));
         jScrollPane1.setViewportView(tablaMaterias);
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 84)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(218, 95, 128));
-        jLabel1.setText("MATERIA PRIMA");
+        jLabel1.setText("INVENTARIO");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -296,8 +310,8 @@ public class MateriaPrimaP extends javax.swing.JPanel {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAltaMateria, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(152, 152, 152)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(203, 203, 203)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -325,19 +339,20 @@ public class MateriaPrimaP extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAltaMateriaActionPerformed
 
     private void btnAltaMateriaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaMateriaMouseEntered
-         btnAltaMateria.setBackground(new Color(93, 179, 75));
+        btnAltaMateria.setBackground(new Color(93, 179, 75));
     }//GEN-LAST:event_btnAltaMateriaMouseEntered
 
     private void btnAltaMateriaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaMateriaMouseExited
         btnAltaMateria.setBackground(Color.decode("#4B933C"));
     }//GEN-LAST:event_btnAltaMateriaMouseExited
 
-    private void EstilosHeader(JTable tabla){
+    private void EstilosHeader(JTable tabla) {
         //tabla.getTableHeader().setFont();
         tabla.getTableHeader().setBackground(Color.decode("#E18D96"));
         tabla.getTableHeader().setForeground(Color.decode("#FFFFFF"));
-        
+
     }
+
     static class HeaderRenderer extends DefaultTableCellRenderer {
 
         @Override

@@ -42,7 +42,7 @@ public class PedidosP extends javax.swing.JPanel {
 
     PreparedStatement ps;
     public static Statement st;
-    String id;
+    String idP;
     private Connection con = null;
     String[] datos = new String[9];
     JTableHeader header = new JTableHeader();
@@ -72,7 +72,6 @@ public class PedidosP extends javax.swing.JPanel {
     };
 
     public void TablaPedidos() {
-        DefaultTableModel miModelo = new DefaultTableModel();
         miModelo.addColumn("ID");
         miModelo.addColumn("Cliente");
         miModelo.addColumn("Postre");
@@ -86,7 +85,7 @@ public class PedidosP extends javax.swing.JPanel {
         tablaPedidos.setModel(miModelo);
         tablaPedidos.setRowHeight(30);
 
-        String sentenciaSQL = "SELECT * FROM pedidos";
+        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -122,7 +121,7 @@ public class PedidosP extends javax.swing.JPanel {
         DefaultTableModel miModelo = (DefaultTableModel) tablaPedidos.getModel();
         miModelo.setRowCount(0);
 
-        String sentenciaSQL = "SELECT * FROM pedidos";
+        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
 
         try {
             st = con.createStatement();
@@ -199,10 +198,10 @@ public class PedidosP extends javax.swing.JPanel {
         public Object getCellEditorValue() {
             if (clicked) {
                 int selectedRow = table.getSelectedRow();
-                id = table.getValueAt(selectedRow, 0).toString();
+                idP = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 7) {
-                    JOptionPane.showMessageDialog(button, "Editando " + id);
+                    JOptionPane.showMessageDialog(button, "Editando " + idP);
                     JFPedidos JFPed = null;
                     try {
                         JFPed = new JFPedidos();
@@ -211,14 +210,14 @@ public class PedidosP extends javax.swing.JPanel {
                     }
                     JFPed.setVisible(true);
                     lblTituloP.setText("Actualizar Pedido");
-                    JFPed.rellenarDatosPedido(id);
+                    JFPed.rellenarDatosPedido(idP);
 
                 } else if (columnIndex == 8) {
                     int resp = JOptionPane.showConfirmDialog(null, "" + "¿Quieres continuar?", "¡Estás a punto de eliminar este pedido!", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) { // respuesta NO
                         try {
                             PreparedStatement ps = con.prepareStatement("DELETE FROM pedidos WHERE idPedido = ?");
-                            ps.setString(1, id);
+                            ps.setString(1, idP);
                             int filasAfectadas = ps.executeUpdate();
                             System.out.println("Número de filas afectadas: " + filasAfectadas);
                             SwingUtilities.invokeLater(() -> actualizarTabla());
@@ -282,8 +281,12 @@ public class PedidosP extends javax.swing.JPanel {
             }
         });
 
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setFocusable(false);
+
         tablaPedidos.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaPedidos.setForeground(new java.awt.Color(51, 51, 51));
+        tablaPedidos.setFocusable(false);
         tablaPedidos.setSelectionBackground(new java.awt.Color(243, 209, 220));
         jScrollPane1.setViewportView(tablaPedidos);
 

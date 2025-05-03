@@ -76,7 +76,7 @@
                   <Component id="panel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="panel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                  <EmptySpace pref="29" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnGuardar" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
                       <Component id="btnCerrar" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
@@ -193,12 +193,17 @@
                           <Component id="cmPostre" alignment="0" min="-2" pref="145" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="0" min="-2" pref="110" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="46" max="32767" attributes="0"/>
+                      <EmptySpace pref="41" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spinnerCantidad" min="-2" pref="80" max="-2" attributes="0"/>
-                          <Component id="jLabel3" min="-2" pref="63" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="jLabel3" min="-2" pref="63" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="spinnerCantidad" min="-2" pref="82" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -212,12 +217,14 @@
                           <Component id="jLabel2" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmCliente" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmPostre" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="spinnerCantidad" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="spinnerCantidad" alignment="1" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cmCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cmPostre" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -232,16 +239,6 @@
             </Component>
             <Component class="Components.ComboBox" name="cmPostre">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Quicksand" size="14" style="1"/>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="Components.Spinner" name="spinnerCantidad">
-              <Properties>
-                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
-                </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Quicksand" size="14" style="1"/>
                 </Property>
@@ -278,6 +275,13 @@
                   <Color blue="dc" green="bd" red="e2" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cantidad"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="spinnerCantidad">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>

@@ -38,7 +38,7 @@ public class JFPedidos extends javax.swing.JFrame {
         initComponents();
         conectar();
         configurarJDateChooser(calendar);
-        RellenarCm("SELECT CONCAT_WS(' ',Nombre, Apellido) as NombreC FROM Clientes", "NombreC", cmCliente, Clientes.class);
+        RellenarCm("SELECT CONCAT(Nombre,' ',Apellido) as NombreC FROM Clientes", "NombreC", cmCliente, Clientes.class);
         RellenarCm("SELECT Nombre FROM Postres", "Nombre", cmPostre, Postres.class);
         RellenarCm("SELECT Tipo FROM TipoEntrega", "Tipo", cmTipoEntrega, TipoEntregas.class);
 
@@ -65,7 +65,7 @@ public class JFPedidos extends javax.swing.JFrame {
                 Combo.addItem(dato);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage() + "HUBO UN ERROR PARA CARGAR LOS PROYECTOS");
+            JOptionPane.showMessageDialog(null, e.getMessage() + "HUBO UN ERROR PARA CARGAR LOS PEDIDOS");
         }
     }
 
@@ -151,7 +151,7 @@ public class JFPedidos extends javax.swing.JFrame {
             String nombreTipo = "";
             idC = rs.getInt("idCliente");
             System.out.println("El cliente actual es: " + idC);
-            String ConsultaCliente = "SELECT concat_ws(' ',Nombre,Apellido) as NombreCompleto FROM Clientes WHERE idCliente =" + idC + "";
+            String ConsultaCliente = "SELECT concat(Nombre,' ',Apellido) as NombreCompleto FROM Clientes WHERE idCliente =" + idC + "";
             rsC = stm.executeQuery(ConsultaCliente);
             if (rsC.next()) {
                 nombreCliente = rsC.getString("NombreCompleto");
@@ -207,7 +207,7 @@ public class JFPedidos extends javax.swing.JFrame {
         DefaultTableModel miModelo = (DefaultTableModel) tablaPedidos.getModel();
         miModelo.setRowCount(0); // Limpiar filas existentes
 
-        String sentenciaSQL = "SELECT * FROM pedidos";
+        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
 
         try {
             st = con.createStatement();
@@ -307,10 +307,10 @@ public class JFPedidos extends javax.swing.JFrame {
         panel2 = new Components.Panel();
         cmCliente = new Components.ComboBox();
         cmPostre = new Components.ComboBox();
-        spinnerCantidad = new Components.Spinner();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        spinnerCantidad = new javax.swing.JSpinner();
         panel3 = new Components.Panel();
         calendar = new com.toedter.calendar.JDateChooser();
         cmTipoEntrega = new Components.ComboBox();
@@ -373,9 +373,6 @@ public class JFPedidos extends javax.swing.JFrame {
 
         cmPostre.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
 
-        spinnerCantidad.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
-        spinnerCantidad.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(226, 189, 220));
         jLabel1.setText("Cliente");
@@ -387,6 +384,8 @@ public class JFPedidos extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(226, 189, 220));
         jLabel3.setText("Cantidad");
+
+        spinnerCantidad.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
         panel2.setLayout(panel2Layout);
@@ -401,11 +400,14 @@ public class JFPedidos extends javax.swing.JFrame {
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmPostre, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
+                        .addComponent(spinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23))))
         );
         panel2Layout.setVerticalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -416,11 +418,12 @@ public class JFPedidos extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmPostre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(spinnerCantidad, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cmCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmPostre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(15, 15, 15))
         );
 
         panel3.setBackgroundColor(new java.awt.Color(218, 95, 128));
@@ -500,7 +503,7 @@ public class JFPedidos extends javax.swing.JFrame {
                 .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -532,7 +535,7 @@ public class JFPedidos extends javax.swing.JFrame {
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         this.dispose();
-        actualizarTabla();
+        MateriaPrimaP.actualizarTabla();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     /**
@@ -591,6 +594,6 @@ public class JFPedidos extends javax.swing.JFrame {
     private Components.Panel panel1;
     private Components.Panel panel2;
     private Components.Panel panel3;
-    private Components.Spinner spinnerCantidad;
+    private javax.swing.JSpinner spinnerCantidad;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,4 +1,3 @@
-
 package repostería;
 
 import java.sql.*;
@@ -15,9 +14,8 @@ import java.time.format.TextStyle;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-
 public class InicioP extends javax.swing.JPanel {
-    
+
     PreparedStatement ps;
     public static Statement st;
     String id;
@@ -26,20 +24,28 @@ public class InicioP extends javax.swing.JPanel {
     JTableHeader header = new JTableHeader();
     LocalDate fecha = LocalDate.now();
     String DosDias, mes;
-    
+
     public InicioP() {
         initComponents();
-        
+
         conectar();
         TablaProxPedidos();
         header = tablaProxPedidos.getTableHeader();
         header.setDefaultRenderer(new PedidosP.HeaderRenderer());
         System.out.println(fecha);
-        lblMonth.setText(fecha.getMonth().getDisplayName(TextStyle.FULL, new Locale("es","ES")));
-        lblDayWeek.setText(fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es","ES")));
+        lblMonth.setText(fecha.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")));
+        lblDayWeek.setText(fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES")));
         FormatoFechaDia(fecha);
         lblYear.setText(String.valueOf(fecha.getYear()));
     }
+
+    DefaultTableModel miModelo = new DefaultTableModel() {
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
     public void conectar() {
         try {
@@ -49,40 +55,46 @@ public class InicioP extends javax.swing.JPanel {
         }
     }
 
-    public void FormatoFechaDia(LocalDate fecha){
-        if(fecha.getDayOfMonth() < 10)
-            lblDay.setText("0"+String.valueOf(fecha.getDayOfMonth()));
-        else
+    public void FormatoFechaDia(LocalDate fecha) {
+        if (fecha.getDayOfMonth() < 10) {
+            lblDay.setText("0" + String.valueOf(fecha.getDayOfMonth()));
+        } else {
             lblDay.setText(String.valueOf(fecha.getDayOfMonth()));
+        }
     }
-    
+
     public void TablaProxPedidos() {
-        DefaultTableModel miModelo = new DefaultTableModel();
-        miModelo.addColumn("Cliente");
-        miModelo.addColumn("Postre");
-        miModelo.addColumn("Cantidad");
-        miModelo.addColumn("Costo");
-        miModelo.addColumn("Fecha Entrega");
-        miModelo.addColumn("Entrega");
-        
+
+        miModelo.setRowCount(0); // Limpia las filas
+        if (miModelo.getColumnCount() == 0) {
+            miModelo.addColumn("Cliente");
+            miModelo.addColumn("Postre");
+            miModelo.addColumn("Cantidad");
+            miModelo.addColumn("Costo");
+            miModelo.addColumn("Fecha Entrega");
+            miModelo.addColumn("Entrega");
+        }
+
         tablaProxPedidos.setModel(miModelo);
         tablaProxPedidos.setRowHeight(30);
 
-        if(fecha.getDayOfMonth() < 10)
-            DosDias = "0"+String.valueOf(fecha.getDayOfMonth()+2);
-        else
-            DosDias = String.valueOf(fecha.getDayOfMonth()+2);
-        
-        if(fecha.getMonthValue() < 10)
-            mes = "0"+String.valueOf(fecha.getMonthValue());
-        else
+        if (fecha.getDayOfMonth() < 10) {
+            DosDias = "0" + String.valueOf(fecha.getDayOfMonth() + 2);
+        } else {
+            DosDias = String.valueOf(fecha.getDayOfMonth() + 2);
+        }
+
+        if (fecha.getMonthValue() < 10) {
+            mes = "0" + String.valueOf(fecha.getMonthValue());
+        } else {
             mes = String.valueOf(fecha.getMonthValue());
-        
-        String Fecha2Dias = fecha.getYear()+"-"+mes+"-"+DosDias;
+        }
+
+        String Fecha2Dias = fecha.getYear() + "-" + mes + "-" + DosDias;
 
         //String sentenciaSQL = "CALL pPedidosProximos(DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY));";
-        String sentenciaSQL = "CALL pPedidosProximos('"+Fecha2Dias+"')";
-        
+        String sentenciaSQL = "CALL pPedidosProximos('" + Fecha2Dias + "')";
+
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -95,7 +107,6 @@ public class InicioP extends javax.swing.JPanel {
                 datos[5] = rs.getString(8);
                 miModelo.addRow(datos);
             }
-            tablaProxPedidos.setModel(miModelo);
             tablaProxPedidos.getColumnModel().getColumn(3).setPreferredWidth(70);
             tablaProxPedidos.getColumnModel().getColumn(3).setMinWidth(70);
             tablaProxPedidos.getColumnModel().getColumn(3).setMaxWidth(70);
@@ -104,11 +115,12 @@ public class InicioP extends javax.swing.JPanel {
             tablaProxPedidos.getColumnModel().getColumn(5).setMaxWidth(70);
             tablaProxPedidos.getColumnModel().getColumn(0).setMinWidth(100);
             tablaProxPedidos.getColumnModel().getColumn(1).setMinWidth(90);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -212,6 +224,8 @@ public class InicioP extends javax.swing.JPanel {
         );
 
         jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setFocusable(false);
         jScrollPane1.setOpaque(true);
 
         tablaProxPedidos.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
@@ -227,6 +241,7 @@ public class InicioP extends javax.swing.JPanel {
 
             }
         ));
+        tablaProxPedidos.setFocusable(false);
         tablaProxPedidos.setRowHeight(32);
         tablaProxPedidos.setSelectionBackground(new java.awt.Color(243, 209, 220));
         tablaProxPedidos.setSelectionForeground(new java.awt.Color(102, 102, 102));
@@ -250,19 +265,20 @@ public class InicioP extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(328, 328, 328)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(CalendarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(328, 328, 328)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(CalendarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
