@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import static repostería.JFClientes.lblTitulo;
 import static repostería.MateriaPrimaP.st;
@@ -168,7 +169,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     DefaultTableModel miModelo = (DefaultTableModel) tablaMaterias.getModel();
     miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "SELECT * FROM materiasprimas";
+    String sentenciaSQL = "CALL pSelectMateria()";
 
     try {
         st = con.createStatement();
@@ -461,8 +462,10 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (lblTituloMP.getText().equals("Registrar Materia Prima")) {
             alta((MateriasPrimas) creacionObjeto());
+            //SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
         } else if (lblTituloMP.getText().equals("Actualizar Materia Prima")) {
             actualizar((MateriasPrimas) creacionObjeto());
+            //SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
         }
         JOptionPane.showMessageDialog(null, "Listo");
         txtNombre.setText("");

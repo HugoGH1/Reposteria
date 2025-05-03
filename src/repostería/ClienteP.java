@@ -44,7 +44,7 @@ public class ClienteP extends javax.swing.JPanel {
     public static Statement st;
     String id;
     private Connection con = null;
-    String[] datos = new String[12];
+    String[] datos = new String[7];
     JTableHeader header = new JTableHeader();
 
     public ClienteP() {
@@ -68,27 +68,29 @@ public class ClienteP extends javax.swing.JPanel {
 
         @Override
         public boolean isCellEditable(int row, int column) {
-            return column == 10 || column == 11;
+            return column == 5 || column == 6;
         }
     };
 
     public void TablaClientes() {
-        miModelo.addColumn("ID");
-        miModelo.addColumn("Nombre");
-        miModelo.addColumn("Apellido");
-        miModelo.addColumn("Teléfono");
-        miModelo.addColumn("Calle");
+        miModelo.addColumn("idCliente");
+        miModelo.addColumn("Cliente");
+        miModelo.addColumn("NumeroTelefonico");
+        miModelo.addColumn("Domicilio");
+        miModelo.addColumn("PostreFav");
+       /* miModelo.addColumn("Calle");
         miModelo.addColumn("Num. Exterior");
         miModelo.addColumn("Colonia");
         miModelo.addColumn("CP");
         miModelo.addColumn("Num. Pedidos");
-        miModelo.addColumn("Postre fav");
+        miModelo.addColumn("Postre fav"); */
         miModelo.addColumn("Editar");
-        miModelo.addColumn("Eliminar");
+        miModelo.addColumn("Eliminar"); 
 
         tablaClientes.setModel(miModelo);
 
-        String sentenciaSQL = "SELECT * FROM clientes";
+        //String sentenciaSQL = "SELECT * FROM clientes";
+        String sentenciaSQL = "CALL pSelectCliente()";
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -98,13 +100,14 @@ public class ClienteP extends javax.swing.JPanel {
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
                 datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-                datos[6] = rs.getString(7);
+                datos[5] = "";
+                datos[6] = "";
+                /*datos[6] = rs.getString(7);
                 datos[7] = rs.getString(8);
                 datos[8] = rs.getString(9);
-                datos[9] = rs.getString(10);
-                datos[10] = "";
-                datos[11] = "";
+                datos[9] = rs.getString(10); */
+                //datos[10] = "";
+                //datos[11] = "";
                 miModelo.addRow(datos);
             }
             tablaClientes.setModel(miModelo);
@@ -116,18 +119,19 @@ public class ClienteP extends javax.swing.JPanel {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        tablaClientes.getColumnModel().getColumn(10).setCellRenderer(new ClienteP.ButtonRenderer("/Images/lapiz.png"));
-        tablaClientes.getColumnModel().getColumn(10).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 10));
+        tablaClientes.getColumnModel().getColumn(5).setCellRenderer(new ClienteP.ButtonRenderer("/Images/lapiz.png"));
+        tablaClientes.getColumnModel().getColumn(5).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 5));
 
-        tablaClientes.getColumnModel().getColumn(11).setCellRenderer(new ClienteP.ButtonRenderer("/Images/borrar.png"));
-        tablaClientes.getColumnModel().getColumn(11).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 11));
+        tablaClientes.getColumnModel().getColumn(6).setCellRenderer(new ClienteP.ButtonRenderer("/Images/borrar.png"));
+        tablaClientes.getColumnModel().getColumn(6).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 6));
     }
 
     public void actualizarTabla() {
         DefaultTableModel miModelo = (DefaultTableModel) tablaClientes.getModel();
         miModelo.setRowCount(0);
 
-        String sentenciaSQL = "SELECT * FROM clientes";
+        //String sentenciaSQL = "SELECT * FROM clientes";
+        String sentenciaSQL = "CALL pSelectCliente()";
 
         try {
             st = con.createStatement();
@@ -138,13 +142,8 @@ public class ClienteP extends javax.swing.JPanel {
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
                 datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-                datos[6] = rs.getString(7);
-                datos[7] = rs.getString(8);
-                datos[8] = rs.getString(9);
-                datos[9] = rs.getString(10);
-                datos[10] = "";
-                datos[11] = "";
+                datos[5] = "";
+                datos[6] = "";
                 miModelo.addRow(datos);
             }
         } catch (SQLException ex) {
@@ -209,14 +208,14 @@ public class ClienteP extends javax.swing.JPanel {
                 int selectedRow = table.getSelectedRow();
                 id = table.getValueAt(selectedRow, 0).toString();
 
-                if (columnIndex == 10) {
+                if (columnIndex == 5) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFClientes ICli = new JFClientes();
                     ICli.setVisible(true);
                     lblTitulo.setText("Actualizar cliente");
                     ICli.rellenarDatosCliente(id);
 
-                } else if (columnIndex == 11) {
+                } else if (columnIndex == 6) {
                     int resp = JOptionPane.showConfirmDialog(null, "" + "¿Quieres continuar?", "¡Estás a punto de eliminar este cliente!", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) { // respuesta NO
                         try {
@@ -268,14 +267,17 @@ public class ClienteP extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
 
-        tablaClientes.setBackground(new java.awt.Color(252, 228, 236));
+        jScrollPane1.setBorder(null);
+
+        tablaClientes.setBackground(new java.awt.Color(255, 255, 255));
         tablaClientes.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaClientes.setForeground(new java.awt.Color(51, 51, 51));
         tablaClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tablaClientes.setFocusable(false);
-        tablaClientes.setGridColor(new java.awt.Color(204, 204, 204));
+        tablaClientes.setGridColor(new java.awt.Color(252, 228, 236));
         tablaClientes.setRowHeight(32);
         tablaClientes.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaClientes.setSelectionForeground(new java.awt.Color(153, 153, 153));
         jScrollPane1.setViewportView(tablaClientes);
 
         btnAltaCliente.setText("Agregar Nuevo");

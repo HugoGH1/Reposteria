@@ -64,6 +64,13 @@ public class PostreP extends javax.swing.JPanel {
         }
     }
 
+    DefaultTableModel miModelo = new DefaultTableModel() {
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return column == 4 || column == 5 || column == 6;
+        }
+    };
     public void TablaPostres() {
         DefaultTableModel miModelo = new DefaultTableModel();
         miModelo.addColumn("ID");
@@ -90,7 +97,6 @@ public class PostreP extends javax.swing.JPanel {
                 miModelo.addRow(datos);
             }
             tablaPostre.setModel(miModelo);
-
             tablaPostre.getColumnModel().getColumn(0).setMaxWidth(0);
             tablaPostre.getColumnModel().getColumn(0).setMinWidth(0);
             tablaPostre.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -384,6 +390,9 @@ public class PostreP extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(950, 720));
         setMinimumSize(new java.awt.Dimension(950, 720));
         setPreferredSize(new java.awt.Dimension(950, 720));
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setFocusable(false);
 
         tablaPostre.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaPostre.setForeground(new java.awt.Color(51, 51, 51));

@@ -22,7 +22,7 @@ public class JFClientes extends javax.swing.JFrame {
     public int idPostre;
     public int idcliente;
     private Connection con = null;
-    String[] datos = new String[12];
+    String[] datos = new String[7];
 
     /**
      * Creates new form JFClientes
@@ -135,7 +135,9 @@ public class JFClientes extends javax.swing.JFrame {
         DefaultTableModel miModelo = (DefaultTableModel) ClienteP.tablaClientes.getModel();
         miModelo.setRowCount(0); // Limpiar filas existentes
 
-        String sentenciaSQL = "SELECT * FROM clientes";
+        //String sentenciaSQL = "SELECT * FROM clientes";
+
+        String sentenciaSQL = "CALL pSelectCliente()";
 
         try {
             st = con.createStatement();
@@ -146,13 +148,8 @@ public class JFClientes extends javax.swing.JFrame {
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
                 datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-                datos[6] = rs.getString(7);
-                datos[7] = rs.getString(8);
-                datos[8] = rs.getString(9);
-                datos[9] = rs.getString(10);
-                datos[10] = "";
-                datos[11] = "";
+                datos[5] = "";
+                datos[6] = "";
                 miModelo.addRow(datos);
             }
         } catch (SQLException ex) {
@@ -480,7 +477,7 @@ public class JFClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(25, 25, 25))
@@ -508,8 +505,10 @@ public class JFClientes extends javax.swing.JFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (lblTitulo.getText().equals("Registrar cliente")) {
             alta((Clientes) creacionObjeto());
+            SwingUtilities.invokeLater(() -> actualizarTabla());
         } else if (lblTitulo.getText().equals("Actualizar cliente")) {
             actualizar((Clientes) creacionObjeto());
+            SwingUtilities.invokeLater(() -> actualizarTabla());
         }
         JOptionPane.showMessageDialog(null, "Listo");
         txtNombre.setText("");

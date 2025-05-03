@@ -81,7 +81,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="panel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btnGuardar" alignment="0" min="-2" pref="44" max="-2" attributes="0"/>
                       <Component id="btnCerrar" alignment="0" min="-2" pref="44" max="-2" attributes="0"/>
                   </Group>

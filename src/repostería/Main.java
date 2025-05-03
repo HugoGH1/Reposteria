@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-
 public class Main extends javax.swing.JFrame {
 
     PostreP postres = new PostreP();
@@ -21,7 +20,7 @@ public class Main extends javax.swing.JFrame {
     MateriaPrimaP materiasprimas = new MateriaPrimaP();
     PedidosP pedidos = new PedidosP();
     InicioP inicio = new InicioP();
-    
+
     public Main() {
         initComponents();
         LocalDate fecha = LocalDate.now();
@@ -46,8 +45,10 @@ public class Main extends javax.swing.JFrame {
         btnPedidos = new javax.swing.JButton();
         btnInicio = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btnProveedores = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SWEETCAKE HOUSE");
         setPreferredSize(new java.awt.Dimension(1250, 750));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -96,7 +97,7 @@ public class Main extends javax.swing.JFrame {
                 btnPostresActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 300, 90));
+        jPanel2.add(btnPostres, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 300, 90));
 
         btnClientes.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnClientes.setForeground(new java.awt.Color(255, 255, 255));
@@ -122,13 +123,16 @@ public class Main extends javax.swing.JFrame {
                 btnClientesActionPerformed(evt);
             }
         });
-        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 300, 90));
+        jPanel2.add(btnClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 300, 90));
 
         btnMateriasPrimas.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnMateriasPrimas.setForeground(new java.awt.Color(255, 255, 255));
-        btnMateriasPrimas.setText("MATERIA PRIMA");
+        btnMateriasPrimas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/harina.png"))); // NOI18N
+        btnMateriasPrimas.setText("INVENTARIO");
         btnMateriasPrimas.setBorderPainted(false);
         btnMateriasPrimas.setContentAreaFilled(false);
+        btnMateriasPrimas.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnMateriasPrimas.setIconTextGap(10);
         btnMateriasPrimas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnMateriasPrimasMouseEntered(evt);
@@ -142,7 +146,7 @@ public class Main extends javax.swing.JFrame {
                 btnMateriasPrimasActionPerformed(evt);
             }
         });
-        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 590, 300, 90));
+        jPanel2.add(btnMateriasPrimas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 300, 90));
 
         btnPedidos.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnPedidos.setForeground(new java.awt.Color(255, 255, 255));
@@ -165,7 +169,7 @@ public class Main extends javax.swing.JFrame {
                 btnPedidosActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 300, 90));
+        jPanel2.add(btnPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 430, 300, 90));
 
         btnInicio.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         btnInicio.setForeground(new java.awt.Color(255, 255, 255));
@@ -189,10 +193,29 @@ public class Main extends javax.swing.JFrame {
                 btnInicioActionPerformed(evt);
             }
         });
-        jPanel2.add(btnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, -1, -1));
+        jPanel2.add(btnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/LogoSweetCake.png"))); // NOI18N
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 190, 230));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 190, 160));
+
+        btnProveedores.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
+        btnProveedores.setForeground(new java.awt.Color(255, 255, 255));
+        btnProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/camion.png"))); // NOI18N
+        btnProveedores.setText("PROVEEDORES");
+        btnProveedores.setBorderPainted(false);
+        btnProveedores.setContentAreaFilled(false);
+        btnProveedores.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnProveedores.setIconTextGap(10);
+        btnProveedores.setPreferredSize(new java.awt.Dimension(193, 41));
+        btnProveedores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnProveedoresMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnProveedoresMouseExited(evt);
+            }
+        });
+        jPanel2.add(btnProveedores, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 610, 300, 90));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 750));
 
@@ -254,7 +277,6 @@ public class Main extends javax.swing.JFrame {
         materiasprimas.setSize(1000, 720);
         materiasprimas.setVisible(true);
         SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
-        
     }//GEN-LAST:event_btnMateriasPrimasActionPerformed
 
     private void btnMateriasPrimasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMateriasPrimasMouseEntered
@@ -289,6 +311,7 @@ public class Main extends javax.swing.JFrame {
         content.repaint();
         inicio.setSize(1000, 720);
         inicio.setVisible(true);
+        inicio.TablaProxPedidos();
     }//GEN-LAST:event_btnInicioActionPerformed
 
     private void btnInicioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInicioMouseEntered
@@ -298,6 +321,14 @@ public class Main extends javax.swing.JFrame {
     private void btnInicioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInicioMouseExited
         MouseExitedButtons(btnInicio);
     }//GEN-LAST:event_btnInicioMouseExited
+
+    private void btnProveedoresMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProveedoresMouseEntered
+        MouseEnteredButtons(btnProveedores);
+    }//GEN-LAST:event_btnProveedoresMouseEntered
+
+    private void btnProveedoresMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProveedoresMouseExited
+        MouseExitedButtons(btnProveedores);
+    }//GEN-LAST:event_btnProveedoresMouseExited
 
     public void MouseExitedButtons(JButton button) {
         button.setBackground(Color.decode("#DA5F80"));
@@ -309,6 +340,10 @@ public class Main extends javax.swing.JFrame {
         button.setBackground(Color.decode("#e889a4"));
         button.setForeground(Color.decode("#DA5F80"));
         button.setOpaque(true);
+    }
+
+    public void recargarTablaPedidos() {
+        inicio.TablaProxPedidos();
     }
 
     /**
@@ -352,6 +387,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnMateriasPrimas;
     private javax.swing.JButton btnPedidos;
     private javax.swing.JButton btnPostres;
+    private javax.swing.JButton btnProveedores;
     private javax.swing.JPanel content;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
