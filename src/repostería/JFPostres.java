@@ -93,8 +93,8 @@ public class JFPostres extends javax.swing.JFrame {
             try{
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            System.out.println("Se ha agregado un nuevo postre");
-            System.out.println("Se ha afectado: "+filasAfectadas);
+           // System.out.println("Se ha agregado un nuevo postre");
+            //System.out.println("Se ha afectado: "+filasAfectadas);
         }catch(SQLException sqle){
             System.out.println(sqle.getMessage()+"alta");
         }
@@ -106,7 +106,7 @@ public class JFPostres extends javax.swing.JFrame {
             
             ps.setString(1, obj.getNombre());
             int filasAfectadas = ps.executeUpdate();
-            System.out.println("Número de filas afectadas: "+filasAfectadas);
+            //System.out.println("Número de filas afectadas: "+filasAfectadas);
             actualizarTabla();
         }catch(SQLException sqle){
             System.out.println(sqle.getMessage());

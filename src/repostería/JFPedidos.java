@@ -72,7 +72,7 @@ public class JFPedidos extends javax.swing.JFrame {
     public int id(String query, JComboBox<String> cmPostre1, int id) {
         try {
             Statement stm = con.createStatement();
-            System.out.println("hola");
+            //System.out.println("hola");
             ResultSet rs = stm.executeQuery(query);
             // idPostre = stm.executeQuery(secuenciaSQL);
             if (rs.next()) {
@@ -97,7 +97,7 @@ public class JFPedidos extends javax.swing.JFrame {
             if (rs.next()) {
                 precio = rs.getInt(1);
             }
-            System.out.println("Id postre listo" + rs);
+            //System.out.println("Id postre listo" + rs);
 
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "idpostreCOSTO");
@@ -112,29 +112,29 @@ public class JFPedidos extends javax.swing.JFrame {
         nombre1 = nombre1.trim().replaceAll(" +", " ");
         String[] partes = nombre1.split(" ", 2); // Divide en nombre y apellido
         String nombre = partes[0];
-        System.out.println(nombre);
+        //System.out.println(nombre);
         String apellido = partes.length > 1 ? partes[1] : "";
-        System.out.println(apellido);
+        //System.out.println(apellido);
         p1.setIdCliente(id("SELECT idCliente FROM clientes WHERE Nombre = '" + nombre + "' AND Apellido = '" + apellido + "'", cmCliente, idCliente));
-        System.out.println("idcliete en creacion objeto" + p1.getIdCliente());
+       // System.out.println("idcliete en creacion objeto" + p1.getIdCliente());
         String nombre2 = cmPostre.getSelectedItem().toString();
         p1.setIdPostre(id("SELECT idPostre FROM postres WHERE Nombre = '" + nombre2 + "'", cmPostre, idPostre));
         p1.setCantidad(Integer.parseInt(spinnerCantidad.getValue().toString()));
         p1.setCosto(costo());
-        System.out.println("Hola antes de error de crear objeto en fecha");
+        //System.out.println("Hola antes de error de crear objeto en fecha");
         java.util.Date fecha = calendar.getDate();
-        System.out.println("hola despues de get date");
+        //System.out.println("hola despues de get date");
         java.sql.Date fechaSQL = new java.sql.Date(fecha.getTime());
-        System.out.println("hola creando fechasql");
+        //System.out.println("hola creando fechasql");
         p1.setFechaEntrega(fechaSQL.toString());
-        System.out.println("hola despues");
+        //System.out.println("hola despues");
         String nombre3 = cmTipoEntrega.getSelectedItem().toString();
         p1.setIdTipoEntrega(id("SELECT idTipoEntrega FROM tipoentrega WHERE Tipo = '" + nombre3 + "'", cmTipoEntrega, idTipoEntrega));
         return p1;
     }
 
     public void rellenarDatosPedido(String id) {
-        ResultSet rs, rsC, rsT, rsP, rsS;
+        ResultSet rs = null, rsC = null, rsT = null, rsP = null, rsS = null;
         Statement stm;
         int idC, idT, idP, spinner;
         idpedido = Integer.parseInt(id);
@@ -145,28 +145,29 @@ public class JFPedidos extends javax.swing.JFrame {
             if (rs.next()) {
                 spinnerCantidad.setValue(rs.getInt("Cantidad"));
                 calendar.setDate(rs.getDate("FechaEntrega"));
-            }
-            String nombreCliente = "";
-            String nombrePostre = "";
-            String nombreTipo = "";
-            idC = rs.getInt("idCliente");
-            System.out.println("El cliente actual es: " + idC);
-            String ConsultaCliente = "SELECT concat(Nombre,' ',Apellido) as NombreCompleto FROM Clientes WHERE idCliente =" + idC + "";
-            rsC = stm.executeQuery(ConsultaCliente);
-            if (rsC.next()) {
-                nombreCliente = rsC.getString("NombreCompleto");
-                for (int i = 0; i < cmCliente.getItemCount(); i++) {
-                    String comboItem = cmCliente.getItemAt(i).toString();
-                    if (comboItem.equals(nombreCliente)) {
-                        cmCliente.setSelectedIndex(i);
-                        break;
+                idC = rs.getInt("idCliente");
+                idP = rs.getInt("idPostre");
+                idT = rs.getInt("idTipoEntrega");
+
+                String nombreCliente = "";
+                String nombrePostre = "";
+                String nombreTipo = "";
+
+                //System.out.println("El cliente actual es: " + idC);
+                String ConsultaCliente = "SELECT concat(Nombre,' ',Apellido) as NombreCompleto FROM Clientes WHERE idCliente =" + idC + "";
+                rsC = stm.executeQuery(ConsultaCliente);
+                if (rsC.next()) {
+                    nombreCliente = rsC.getString("NombreCompleto");
+                    for (int i = 0; i < cmCliente.getItemCount(); i++) {
+                        String comboItem = cmCliente.getItemAt(i).toString();
+                        if (comboItem.equals(nombreCliente)) {
+                            cmCliente.setSelectedIndex(i);
+                            break;
+                        }
                     }
                 }
-            }
-            rs = stm.executeQuery(ConsultaDatos);
-            if (rs.next()) {
-                idP = rs.getInt("idPostre");
-                System.out.println("El postre actual es: " + idP);
+
+                //System.out.println("El postre actual es: " + idP);
                 String ConsultaPostre = "SELECT Nombre FROM postres WHERE idPostre =" + idP + "";
                 rsP = stm.executeQuery(ConsultaPostre);
                 if (rsP.next()) {
@@ -179,11 +180,8 @@ public class JFPedidos extends javax.swing.JFrame {
                         }
                     }
                 }
-            }
-            rs = stm.executeQuery(ConsultaDatos);
-            if (rs.next()) {
-                idT = rs.getInt("idTipoEntrega");
-                System.out.println("El tipo entrega actual es: " + idT);
+
+                //System.out.println("El tipo entrega actual es: " + idT);
                 String ConsultaTipoEntrega = "SELECT Tipo FROM tipoentrega WHERE idTipoEntrega=" + idT + "";
                 rsT = stm.executeQuery(ConsultaTipoEntrega);
                 if (rsT.next()) {
@@ -196,9 +194,12 @@ public class JFPedidos extends javax.swing.JFrame {
                         }
                     }
                 }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró el pedido con ID: " + id);
             }
         } catch (SQLException sql) {
-            JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL CLIENTE");
+            JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL PEDIDO");
             System.out.println(sql.getMessage());
         }
     }
@@ -207,7 +208,7 @@ public class JFPedidos extends javax.swing.JFrame {
         DefaultTableModel miModelo = (DefaultTableModel) tablaPedidos.getModel();
         miModelo.setRowCount(0); // Limpiar filas existentes
 
-        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
+        String sentenciaSQL = "SELECT pe.idPedido,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
 
         try {
             st = con.createStatement();
@@ -237,23 +238,23 @@ public class JFPedidos extends javax.swing.JFrame {
             if (rs.next()) {
                 pedidos = rs.getInt(1);
             }
-            System.out.println("pedidos antes del update" + pedidos);
+            //System.out.println("pedidos antes del update" + pedidos);
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage());
         }
         try {
-            System.out.println("pedidos antes de aumentar" + pedidos);
+            //System.out.println("pedidos antes de aumentar" + pedidos);
             pedidos++;
-            System.out.println("pedidos despues de aumentar" + pedidos);
+            //System.out.println("pedidos despues de aumentar" + pedidos);
             PreparedStatement ps = con.prepareStatement("UPDATE clientes SET NumeroPedidos = '" + pedidos + "' "
                     + "WHERE idcliente = '" + obj.getIdCliente() + "'");
             int filasAfectadas = ps.executeUpdate();
-            System.out.println("Número de filas afectadas en update: " + filasAfectadas);
+            //System.out.println("Número de filas afectadas en update: " + filasAfectadas);
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage());
             sqle.printStackTrace();
         }
-        System.out.println(obj.getIdCliente() + "id cliente antes de hacer insert");
+        //System.out.println(obj.getIdCliente() + "id cliente antes de hacer insert");
         String secuenciaSQL = ("INSERT INTO Pedidos (idCliente, idPostre, Cantidad, Costo,"
                 + "FechaEntrega, idTipoEntrega) VALUE ('" + obj.getIdCliente() + "','" + obj.getIdPostre() + "','"
                 + obj.getCantidad() + "','" + obj.getCosto() + "','" + obj.getFechaEntrega() + "','"
@@ -261,7 +262,7 @@ public class JFPedidos extends javax.swing.JFrame {
         try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            System.out.println("Se ha agregado un nuevo pedido");
+            //System.out.println("Se ha agregado un nuevo pedido");
             System.out.println("Se ha afectado: " + filasAfectadas);
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "alta");
@@ -535,7 +536,9 @@ public class JFPedidos extends javax.swing.JFrame {
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         this.dispose();
-        MateriaPrimaP.actualizarTabla();
+        actualizarTabla();
+        //PedidosP pe = new PedidosP();
+        //SwingUtilities.invokeLater(() -> pe.actualizarTabla());
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     /**

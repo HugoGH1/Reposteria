@@ -58,7 +58,7 @@ public class PedidosP extends javax.swing.JPanel {
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
-            System.out.println("Conexion Correcta");
+            //System.out.println("Conexion Correcta");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "conectar");
         }
@@ -85,7 +85,7 @@ public class PedidosP extends javax.swing.JPanel {
         tablaPedidos.setModel(miModelo);
         tablaPedidos.setRowHeight(30);
 
-        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
+        String sentenciaSQL = "SELECT pe.idPedido,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -121,7 +121,7 @@ public class PedidosP extends javax.swing.JPanel {
         DefaultTableModel miModelo = (DefaultTableModel) tablaPedidos.getModel();
         miModelo.setRowCount(0);
 
-        String sentenciaSQL = "SELECT c.idCliente,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
+        String sentenciaSQL = "SELECT pe.idPedido,CONCAT(c.Nombre,' ',c.Apellido) AS Cliente,p.Nombre AS Postre,pe.Cantidad,pe.Costo,pe.FechaEntrega,te.Tipo FROM pedidos pe INNER JOIN clientes c ON pe.idCliente = c.idCliente INNER JOIN postres p ON pe.idPostre = p.idPostre INNER JOIN tipoentrega te ON pe.idTipoEntrega = te.idTipoEntrega ORDER BY pe.FechaEntrega ASC";
 
         try {
             st = con.createStatement();
@@ -219,7 +219,7 @@ public class PedidosP extends javax.swing.JPanel {
                             PreparedStatement ps = con.prepareStatement("DELETE FROM pedidos WHERE idPedido = ?");
                             ps.setString(1, idP);
                             int filasAfectadas = ps.executeUpdate();
-                            System.out.println("Número de filas afectadas: " + filasAfectadas);
+                            //System.out.println("Número de filas afectadas: " + filasAfectadas);
                             SwingUtilities.invokeLater(() -> actualizarTabla());
                         } catch (SQLException sqle) {
                             System.out.println(sqle.getMessage());
@@ -288,6 +288,7 @@ public class PedidosP extends javax.swing.JPanel {
         tablaPedidos.setForeground(new java.awt.Color(51, 51, 51));
         tablaPedidos.setFocusable(false);
         tablaPedidos.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaPedidos.setSelectionForeground(new java.awt.Color(153, 153, 153));
         jScrollPane1.setViewportView(tablaPedidos);
 
         btnGenerarPDF.setBackground(new java.awt.Color(218, 95, 128));

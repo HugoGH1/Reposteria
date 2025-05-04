@@ -58,7 +58,7 @@ public class PostreP extends javax.swing.JPanel {
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
-            System.out.println("Conexion Correcta");
+            //System.out.println("Conexion Correcta");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "conectar");
         }
@@ -203,8 +203,8 @@ public class PostreP extends javax.swing.JPanel {
 
                         ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
-                        System.out.println("Número de filas afectadas: " + filasAfectadas);
-                        System.out.println("Postre eliminado");
+                       /// System.out.println("Número de filas afectadas: " + filasAfectadas);
+                       // System.out.println("Postre eliminado");
                         SwingUtilities.invokeLater(() -> actualizarTabla());
                     } catch (SQLException sqle) {
                         //System.out.println(sqle.getMessage());
@@ -247,7 +247,7 @@ public class PostreP extends javax.swing.JPanel {
                                             // Guardamos temporalmente lo que se actualizará
                                             actualizaciones.add(new ActualizacionStock(resto, rs.getString("idmateriasprimas")));
                                             conta++;
-                                            System.out.println(todoCorrecto);
+                                            //System.out.println(todoCorrecto);
                                         } else {
 
                                             todoCorrecto = false;
@@ -261,19 +261,19 @@ public class PostreP extends javax.swing.JPanel {
                                     }
 
                                     if (todoCorrecto && !actualizaciones.isEmpty()) {
-                                        System.out.println(todoCorrecto);
+                                        //System.out.println(todoCorrecto);
                                         for (ActualizacionStock act : actualizaciones) {
                                             String sql = "UPDATE materiasprimas SET stock = ? WHERE idmateriasprimas = ?";
                                             PreparedStatement ps = con.prepareStatement(sql);
                                             ps.setInt(1, act.nuevoStock);
                                             ps.setString(2, act.idMateriaPrima);
                                             ps.executeUpdate();
-                                            System.out.println(todoCorrecto);
+                                           // System.out.println(todoCorrecto);
                                         }
-                                        System.out.println(conta + " " + contador);
+                                       // System.out.println(conta + " " + contador);
 
                                     } else {
-                                        con.rollback(); // ❌ Cancelamos cualquier posible cambio
+                                        con.rollback(); //  Cancelamos cualquier posible cambio
                                         System.out.println("Transacción cancelada.");
                                     }
 
@@ -346,8 +346,8 @@ public class PostreP extends javax.swing.JPanel {
                         } else {
                             con.rollback();
                             con.setAutoCommit(true);
-                        }// ✅ Confirmamos la transacción
-                        System.out.println(todoCorrecto);
+                        }//  Confirmamos la transacción
+                      //  System.out.println(todoCorrecto);
                         JOptionPane.showMessageDialog(null, "Todos los stocks fueron actualizados correctamente.");
                     } catch (SQLException ex) {
                         Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
@@ -399,6 +399,7 @@ public class PostreP extends javax.swing.JPanel {
         tablaPostre.setFocusable(false);
         tablaPostre.setRowHeight(32);
         tablaPostre.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaPostre.setSelectionForeground(new java.awt.Color(153, 153, 153));
         jScrollPane1.setViewportView(tablaPostre);
 
         btnInsertar.setText("Agregar Nuevo");

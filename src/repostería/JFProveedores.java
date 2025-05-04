@@ -5,9 +5,16 @@
 package repostería;
 
 import java.sql.Connection;
+import java.sql.*;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,6 +22,8 @@ import java.sql.Statement;
  */
 public class JFProveedores extends javax.swing.JFrame {
     private Connection con = null;
+    String[] datos = new String[6];
+    public int idproveedor;
     /**
      * Creates new form JFProveedores
      */
@@ -39,6 +48,30 @@ public class JFProveedores extends javax.swing.JFrame {
         pv1.setCodigoPostal(txtCP.getText());
         return pv1;
     }
+     
+    public void rellenarDatosProveedor(String id) {
+        ResultSet rs, rsP;
+        Statement stm;
+        idproveedor = Integer.parseInt(id);
+        String ConsultaDatos = "SELECT * FROM proveedores WHERE idProveedor=" + idproveedor + "";
+        try {
+            stm = con.createStatement();
+            rs = stm.executeQuery(ConsultaDatos);
+            if (rs.next()) {
+                txtNombre.setText(rs.getString("Nombre"));
+                txtNumTel.setText(rs.getString("NumeroTelefonico"));
+                txtCalle.setText(rs.getString("Calle"));
+                txtNumExt.setText(rs.getString("NumeroExterior"));
+                txtColonia.setText(rs.getString("Colonia"));
+                txtCP.setText(rs.getString("CodigoPostal"));
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encuentra a ese proveedor");
+            }
+        } catch (SQLException sql) {
+            JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL PROVEEDOR");
+        }
+    }
+    
     public void alta(Proveedores obj){
             String secuenciaSQL = ("INSERT INTO Proveedores (Nombre, NumeroTelefonico,Calle,"
                     + "NumeroExterior, Colonia, CodigoPostal) VALUE ('"+obj.getNombre()+"','"+
@@ -47,12 +80,56 @@ public class JFProveedores extends javax.swing.JFrame {
             try{
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            System.out.println("Se ha agregado un nuevo proveedor");
-            System.out.println("Se ha afectado: "+filasAfectadas);
+            //System.out.println("Se ha agregado un nuevo proveedor");
+            //System.out.println("Se ha afectado: "+filasAfectadas);
         }catch(SQLException sqle){
             System.out.println(sqle.getMessage()+"alta");
         }
     }
+    
+    public void actualizar(Proveedores obj) {
+        try {
+            String secuenciaSQL = "UPDATE proveedores SET Nombre = ?, NumeroTelefonico = ?, "
+                    + "Calle = ?, NumeroExterior = ?,Colonia = ?, CodigoPostal = ? "
+                    + "WHERE idProveedor =" + idproveedor + "";
+            PreparedStatement ps = con.prepareStatement(secuenciaSQL);
+            ps.setString(1, obj.getNombre());
+            ps.setString(2, obj.getNumeroTelefonico());
+            ps.setString(3, obj.getCalle());
+            ps.setString(4, obj.getNumeroExterior());
+            ps.setString(5, obj.getColonia());
+            ps.setString(6, obj.getCodigoPostal());
+            
+            int filasActualizadas = ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Los Datos del proveedor fueron actualizados");
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "actualizacion");
+        }
+    }
+    
+    public void actualizarTabla() {
+        DefaultTableModel miModelo = (DefaultTableModel) ProveedoresP.tablaProveedores.getModel();
+        miModelo.setRowCount(0); // Limpiar filas existentes
+
+        String sentenciaSQL = "SELECT idProveedor, Nombre, NumeroTelefonico,CONCAT(Calle,' ',NumeroExterior,', ',Colonia,' ',CodigoPostal) AS Domicilio FROM proveedores";
+
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentenciaSQL);
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = "";
+                datos[5] = "";
+                miModelo.addRow(datos);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,7 +142,7 @@ public class JFProveedores extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         panel1 = new Components.Panel();
-        jLabel7 = new javax.swing.JLabel();
+        lblTitulo = new javax.swing.JLabel();
         panel2 = new Components.Panel();
         txtNombre = new Components.TextField();
         txtNumTel = new Components.TextField();
@@ -81,6 +158,7 @@ public class JFProveedores extends javax.swing.JFrame {
         txtCP = new Components.TextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        btnCerrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,9 +178,8 @@ public class JFProveedores extends javax.swing.JFrame {
         panel1.setBorderColor(new java.awt.Color(218, 95, 128));
         panel1.setFocusable(false);
 
-        jLabel7.setFont(new java.awt.Font("Quicksand", 1, 18)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(226, 189, 220));
-        jLabel7.setText("Proveedores");
+        lblTitulo.setFont(new java.awt.Font("Quicksand", 1, 18)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(226, 189, 220));
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
@@ -110,14 +187,14 @@ public class JFProveedores extends javax.swing.JFrame {
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
@@ -250,6 +327,16 @@ public class JFProveedores extends javax.swing.JFrame {
                 .addGap(15, 15, 15))
         );
 
+        btnCerrar.setBackground(new java.awt.Color(138, 31, 42));
+        btnCerrar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnCerrar.setForeground(new java.awt.Color(204, 204, 204));
+        btnCerrar.setText("Cerrar");
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -262,7 +349,9 @@ public class JFProveedores extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(372, 372, 372)
+                            .addGap(245, 245, 245)
+                            .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -281,7 +370,9 @@ public class JFProveedores extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                    .addComponent(btnCerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(27, 27, 27))
         );
 
@@ -300,12 +391,30 @@ public class JFProveedores extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        alta((Proveedores)creacionObjeto());
+        if (JFProveedores.lblTitulo.getText().equals("Registrar proveedor")) {
+            alta((Proveedores) creacionObjeto());
+            SwingUtilities.invokeLater(() -> actualizarTabla());
+        } else if (JFProveedores.lblTitulo.getText().equals("Actualizar proveedor")) {
+            actualizar((Proveedores) creacionObjeto());
+            SwingUtilities.invokeLater(() -> actualizarTabla());
+        }
+        JOptionPane.showMessageDialog(null, "Listo");
+        txtNombre.setText("");
+        txtNumTel.setText("");
+        txtCalle.setText("");
+        txtNumExt.setText("");
+        txtColonia.setText("");
+        txtCP.setText("");
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtCPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCPActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCPActionPerformed
+
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        this.dispose();
+        actualizarTabla();
+    }//GEN-LAST:event_btnCerrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -343,6 +452,7 @@ public class JFProveedores extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -350,8 +460,8 @@ public class JFProveedores extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    public static javax.swing.JLabel lblTitulo;
     private Components.Panel panel1;
     private Components.Panel panel2;
     private Components.Panel panel3;

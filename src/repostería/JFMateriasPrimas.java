@@ -69,13 +69,13 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     public int id(String query, JComboBox<String> cmPostre1, int id) {
         try {
             Statement stm = con.createStatement();
-            System.out.println("hola");
+            //System.out.println("hola");
             ResultSet rs = stm.executeQuery(query);
             // idPostre = stm.executeQuery(secuenciaSQL);
             if (rs.next()) {
                 id = rs.getInt(1);
             }
-            System.out.println("Id postre listo" + rs);
+            //System.out.println("Id postre listo" + rs);
 
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "idpostreID");
@@ -113,7 +113,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
                 txtStock.setText(rs.getString("Stock"));
             }
             idC = rs.getInt("idCategoria");
-            System.out.println("La categoría actual es: " + idC);
+            //System.out.println("La categoría actual es: " + idC);
             String ConsultaCategoria = "SELECT Categoria FROM categorias WHERE idCategoria =" + idC + "";
             rsC = stm.executeQuery(ConsultaCategoria);
             if (rsC.next()) {
@@ -129,7 +129,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
             rs = stm.executeQuery(ConsultaDatos);
             if (rs.next()) {
                 idU = rs.getInt("idUnidadMedida");
-                System.out.println("La unidad medida actual es: " + idU);
+                //System.out.println("La unidad medida actual es: " + idU);
                 String ConsultaUnidadMedida = "SELECT Unidad FROM unidadesmedidas WHERE idUnidadMedida =" + idU + "";
                 rsU = stm.executeQuery(ConsultaUnidadMedida);
                 if (rsU.next()) {
@@ -146,7 +146,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
             rs = stm.executeQuery(ConsultaDatos);
             if (rs.next()) {
                 idP = rs.getInt("idProveedor");
-                System.out.println("El proveedor actual es: " + idP);
+                //System.out.println("El proveedor actual es: " + idP);
                 String ConsultaProveedor = "SELECT Nombre FROM proveedores WHERE idProveedor =" + idP + "";
                 rsP = stm.executeQuery(ConsultaProveedor);
                 if (rsP.next()) {
@@ -196,8 +196,8 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
         try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            System.out.println("Se ha agregado una nueva materia prima");
-            System.out.println("Se ha afectado: " + filasAfectadas);
+            //System.out.println("Se ha agregado una nueva materia prima");
+            //System.out.println("Se ha afectado: " + filasAfectadas);
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "alta");
         }
@@ -462,10 +462,10 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (lblTituloMP.getText().equals("Registrar Materia Prima")) {
             alta((MateriasPrimas) creacionObjeto());
-            //SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+            SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
         } else if (lblTituloMP.getText().equals("Actualizar Materia Prima")) {
             actualizar((MateriasPrimas) creacionObjeto());
-            //SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+            SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
         }
         JOptionPane.showMessageDialog(null, "Listo");
         txtNombre.setText("");
