@@ -20,7 +20,7 @@ public class Main extends javax.swing.JFrame {
     MateriaPrimaP materiasprimas = new MateriaPrimaP();
     PedidosP pedidos = new PedidosP();
     InicioP inicio = new InicioP();
-
+    ProveedoresP proveedores = new ProveedoresP();
     public Main() {
         initComponents();
         LocalDate fecha = LocalDate.now();
@@ -215,6 +215,11 @@ public class Main extends javax.swing.JFrame {
                 btnProveedoresMouseExited(evt);
             }
         });
+        btnProveedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProveedoresActionPerformed(evt);
+            }
+        });
         jPanel2.add(btnProveedores, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 610, 300, 90));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 750));
@@ -329,6 +334,15 @@ public class Main extends javax.swing.JFrame {
     private void btnProveedoresMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProveedoresMouseExited
         MouseExitedButtons(btnProveedores);
     }//GEN-LAST:event_btnProveedoresMouseExited
+
+    private void btnProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedoresActionPerformed
+        content.removeAll();
+        content.add(proveedores, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        proveedores.setSize(1000, 720);
+        proveedores.setVisible(true);
+    }//GEN-LAST:event_btnProveedoresActionPerformed
 
     public void MouseExitedButtons(JButton button) {
         button.setBackground(Color.decode("#DA5F80"));

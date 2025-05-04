@@ -31,27 +31,25 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import static repostería.JFClientes.lblTitulo;
-import static repostería.PostreP.st;
-import static repostería.PostreP.tablaPostre;
 
 /**
  *
- * @author Carolina
+ * @author hecto
  */
-public class ClienteP extends javax.swing.JPanel {
-
+public class ProveedoresP extends javax.swing.JPanel {
+    
     PreparedStatement ps;
     public static Statement st;
     String id;
     private Connection con = null;
-    String[] datos = new String[7];
+    String[] datos = new String[6];
     JTableHeader header = new JTableHeader();
-
-    public ClienteP() {
+    
+    public ProveedoresP() {
         initComponents();
         conectar();
-        TablaClientes();
-        header = tablaClientes.getTableHeader();
+        TablaProveedores();
+        header = tablaProveedores.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer());
     }
 
@@ -63,34 +61,26 @@ public class ClienteP extends javax.swing.JPanel {
             System.out.println(sqle.getMessage() + "conectar");
         }
     }
-
+    
     DefaultTableModel miModelo = new DefaultTableModel() {
 
         @Override
         public boolean isCellEditable(int row, int column) {
-            return column == 5 || column == 6;
+            return column == 4 || column == 5;
         }
     };
-
-    public void TablaClientes() {
-        miModelo.addColumn("idCliente");
-        miModelo.addColumn("Cliente");
+    
+    public void TablaProveedores() {
+        miModelo.addColumn("idProveedor");
+        miModelo.addColumn("Nombre");
         miModelo.addColumn("NumeroTelefonico");
         miModelo.addColumn("Domicilio");
-        miModelo.addColumn("PostreFav");
-       /* miModelo.addColumn("Calle");
-        miModelo.addColumn("Num. Exterior");
-        miModelo.addColumn("Colonia");
-        miModelo.addColumn("CP");
-        miModelo.addColumn("Num. Pedidos");
-        miModelo.addColumn("Postre fav"); */
         miModelo.addColumn("Editar");
         miModelo.addColumn("Eliminar"); 
 
-        tablaClientes.setModel(miModelo);
+        tablaProveedores.setModel(miModelo);
 
-        //String sentenciaSQL = "SELECT * FROM clientes";
-        String sentenciaSQL = "CALL pSelectCliente()";
+        String sentenciaSQL = "SELECT idProveedor, Nombre, NumeroTelefonico,CONCAT(Calle,' ',NumeroExterior,', ',Colonia,' ',CodigoPostal) AS Domicilio FROM proveedores";
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sentenciaSQL);
@@ -99,39 +89,31 @@ public class ClienteP extends javax.swing.JPanel {
                 datos[1] = rs.getString(2);
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
-                datos[4] = rs.getString(5);
+                datos[4] = "";
                 datos[5] = "";
-                datos[6] = "";
-                /*datos[6] = rs.getString(7);
-                datos[7] = rs.getString(8);
-                datos[8] = rs.getString(9);
-                datos[9] = rs.getString(10); */
-                //datos[10] = "";
-                //datos[11] = "";
                 miModelo.addRow(datos);
             }
-            tablaClientes.setModel(miModelo);
-            tablaClientes.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablaClientes.getColumnModel().getColumn(0).setMinWidth(0);
-            tablaClientes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablaProveedores.setModel(miModelo);
+            tablaProveedores.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablaProveedores.getColumnModel().getColumn(0).setMinWidth(0);
+            tablaProveedores.getColumnModel().getColumn(0).setPreferredWidth(0);
 
         } catch (SQLException ex) {
             Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        tablaClientes.getColumnModel().getColumn(5).setCellRenderer(new ClienteP.ButtonRenderer("/Images/lapiz.png"));
-        tablaClientes.getColumnModel().getColumn(5).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 5));
+        tablaProveedores.getColumnModel().getColumn(4).setCellRenderer(new ProveedoresP.ButtonRenderer("/Images/lapiz.png"));
+        tablaProveedores.getColumnModel().getColumn(4).setCellEditor(new ProveedoresP.ButtonEditor(new JCheckBox(), "/Images/lapiz.png", 4));
 
-        tablaClientes.getColumnModel().getColumn(6).setCellRenderer(new ClienteP.ButtonRenderer("/Images/borrar.png"));
-        tablaClientes.getColumnModel().getColumn(6).setCellEditor(new ClienteP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 6));
+        tablaProveedores.getColumnModel().getColumn(5).setCellRenderer(new ProveedoresP.ButtonRenderer("/Images/borrar.png"));
+        tablaProveedores.getColumnModel().getColumn(5).setCellEditor(new ProveedoresP.ButtonEditor(new JCheckBox(), "/Images/borrar.png", 5));
     }
-
+    
     public void actualizarTabla() {
-        DefaultTableModel miModelo = (DefaultTableModel) tablaClientes.getModel();
+        DefaultTableModel miModelo = (DefaultTableModel) tablaProveedores.getModel();
         miModelo.setRowCount(0);
 
-        //String sentenciaSQL = "SELECT * FROM clientes";
-        String sentenciaSQL = "CALL pSelectCliente()";
+        String sentenciaSQL = "SELECT idProveedor, Nombre, NumeroTelefonico,CONCAT(Calle,' ',NumeroExterior,', ',Colonia,' ',CodigoPostal) AS Domicilio FROM proveedores";
 
         try {
             st = con.createStatement();
@@ -141,16 +123,15 @@ public class ClienteP extends javax.swing.JPanel {
                 datos[1] = rs.getString(2);
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
-                datos[4] = rs.getString(5);
+                datos[4] = "";
                 datos[5] = "";
-                datos[6] = "";
                 miModelo.addRow(datos);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer(String iconPath) {
@@ -208,18 +189,18 @@ public class ClienteP extends javax.swing.JPanel {
                 int selectedRow = table.getSelectedRow();
                 id = table.getValueAt(selectedRow, 0).toString();
 
-                if (columnIndex == 5) {
+                if (columnIndex == 4) {
                     JOptionPane.showMessageDialog(button, "Editando " + id);
-                    JFClientes ICli = new JFClientes();
-                    ICli.setVisible(true);
-                    lblTitulo.setText("Actualizar cliente");
-                    ICli.rellenarDatosCliente(id);
+                    JFProveedores IPro = new JFProveedores();
+                    IPro.setVisible(true);
+                    IPro.lblTitulo.setText("Actualizar proveedor");
+                    IPro.rellenarDatosProveedor(id);
 
-                } else if (columnIndex == 6) {
-                    int resp = JOptionPane.showConfirmDialog(null, "" + "¿Quieres continuar?", "¡Estás a punto de eliminar este cliente!", JOptionPane.YES_NO_OPTION);
+                } else if (columnIndex == 5) {
+                    int resp = JOptionPane.showConfirmDialog(null, "" + "¿Quieres continuar?", "¡Estás a punto de eliminar este proveedor!", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) { // respuesta NO
                         try {
-                            PreparedStatement ps = con.prepareStatement("DELETE FROM clientes WHERE idCliente = ?");
+                            PreparedStatement ps = con.prepareStatement("DELETE FROM proveedores WHERE idProveedor = ?");
                             ps.setString(1, id);
                         int filasAfectadas = ps.executeUpdate();
                         //System.out.println("Número de filas afectadas: " + filasAfectadas);
@@ -248,58 +229,53 @@ public class ClienteP extends javax.swing.JPanel {
         return true;
     }
 }
-
-/**
- * This method is called from within the constructor to initialize the form.
- * WARNING: Do NOT modify this code. The content of this method is always
- * regenerated by the Form Editor.
- */
-@SuppressWarnings("unchecked")
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaClientes = new javax.swing.JTable();
-        btnAltaCliente = new Components.Button();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablaProveedores = new javax.swing.JTable();
+        btnAltaProveedor = new Components.Button();
 
         setBackground(new java.awt.Color(255, 194, 209));
-        setMaximumSize(new java.awt.Dimension(950, 720));
-        setMinimumSize(new java.awt.Dimension(950, 720));
-
-        jScrollPane1.setBorder(null);
-
-        tablaClientes.setBackground(new java.awt.Color(255, 255, 255));
-        tablaClientes.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
-        tablaClientes.setForeground(new java.awt.Color(51, 51, 51));
-        tablaClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tablaClientes.setFocusable(false);
-        tablaClientes.setGridColor(new java.awt.Color(252, 228, 236));
-        tablaClientes.setRowHeight(32);
-        tablaClientes.setSelectionBackground(new java.awt.Color(243, 209, 220));
-        tablaClientes.setSelectionForeground(new java.awt.Color(153, 153, 153));
-        jScrollPane1.setViewportView(tablaClientes);
-
-        btnAltaCliente.setText("Agregar Nuevo");
-        btnAltaCliente.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-        btnAltaCliente.setRadius(20);
-        btnAltaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAltaClienteMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAltaClienteMouseExited(evt);
-            }
-        });
-        btnAltaCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAltaClienteActionPerformed(evt);
-            }
-        });
+        setPreferredSize(new java.awt.Dimension(950, 720));
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 84)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(218, 95, 128));
-        jLabel1.setText("CLIENTES");
+        jLabel1.setText("PROVEEDORES");
+
+        tablaProveedores.setBackground(new java.awt.Color(255, 255, 255));
+        tablaProveedores.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
+        tablaProveedores.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tablaProveedores.setGridColor(new java.awt.Color(252, 228, 236));
+        tablaProveedores.setRowHeight(30);
+        tablaProveedores.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaProveedores.setSelectionForeground(new java.awt.Color(153, 153, 153));
+        jScrollPane1.setViewportView(tablaProveedores);
+
+        btnAltaProveedor.setText("Agregar Nuevo");
+        btnAltaProveedor.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnAltaProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAltaProveedorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -310,41 +286,32 @@ public class ClienteP extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnAltaProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(244, 244, 244)
+                        .addGap(164, 164, 164)
                         .addComponent(jLabel1)))
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAltaProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnAltaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAltaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaClienteActionPerformed
-        JFClientes ICli = new JFClientes();
-        ICli.setVisible(true);
-        lblTitulo.setText("Registrar cliente");
-    }//GEN-LAST:event_btnAltaClienteActionPerformed
+    private void btnAltaProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaProveedorActionPerformed
+        JFProveedores IPro = new JFProveedores();
+        IPro.setVisible(true);
+        IPro.lblTitulo.setText("Registrar proveedor");
+    }//GEN-LAST:event_btnAltaProveedorActionPerformed
 
-    private void btnAltaClienteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaClienteMouseEntered
-        btnAltaCliente.setBackground(new Color(93, 179, 75));
-    }//GEN-LAST:event_btnAltaClienteMouseEntered
-
-    private void btnAltaClienteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAltaClienteMouseExited
-        btnAltaCliente.setBackground(Color.decode("#4B933C"));
-    }//GEN-LAST:event_btnAltaClienteMouseExited
-
-    
     private void EstilosHeader(JTable tabla){
         //tabla.getTableHeader().setFont();
         tabla.getTableHeader().setBackground(Color.decode("#E18D96"));
@@ -368,12 +335,12 @@ public class ClienteP extends javax.swing.JPanel {
         return this;
     }
 }
-
-
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Components.Button btnAltaCliente;
+    private Components.Button btnAltaProveedor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTable tablaClientes;
+    public static javax.swing.JTable tablaProveedores;
     // End of variables declaration//GEN-END:variables
 }

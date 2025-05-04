@@ -59,7 +59,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
-            System.out.println("Conexion Correcta");
+            //System.out.println("Conexion Correcta");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "conectar");
         }
@@ -223,7 +223,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
                             PreparedStatement ps = con.prepareStatement("DELETE FROM materiasprimas WHERE idMateriasPrimas = ?");
                             ps.setString(1, id);
                             int filasAfectadas = ps.executeUpdate();
-                            System.out.println("Número de filas afectadas: " + filasAfectadas);
+                            //System.out.println("Número de filas afectadas: " + filasAfectadas);
                             SwingUtilities.invokeLater(() -> actualizarTabla());
                         } catch (SQLException sqle) {
                             System.out.println(sqle.getMessage());
@@ -292,6 +292,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         tablaMaterias.setForeground(new java.awt.Color(51, 51, 51));
         tablaMaterias.setFocusable(false);
         tablaMaterias.setSelectionBackground(new java.awt.Color(243, 209, 220));
+        tablaMaterias.setSelectionForeground(new java.awt.Color(153, 153, 153));
         jScrollPane1.setViewportView(tablaMaterias);
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 84)); // NOI18N

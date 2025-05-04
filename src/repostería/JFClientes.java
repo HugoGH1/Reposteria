@@ -92,7 +92,7 @@ public class JFClientes extends javax.swing.JFrame {
                 txtColonia.setText(rs.getString("Colonia"));
                 txtCP.setText(rs.getString("CodigoPostal"));
                 idP = rs.getInt("idPostre");
-                System.out.println("El postre actual es: " + idP);
+                //System.out.println("El postre actual es: " + idP);
                 String ConsultaPostre = "SELECT Nombre FROM postres WHERE idPostre =" + idP + "";
                 rsP = stm.executeQuery(ConsultaPostre);
                 if (rsP.next()) {
@@ -118,7 +118,7 @@ public class JFClientes extends javax.swing.JFrame {
         String secuenciaSQL = ("SELECT idPostre FROM postres WHERE Nombre = '" + nombre + "'");
         try {
             Statement stm = con.createStatement();
-            System.out.println("hola");
+            //System.out.println("hola");
             ResultSet rs = stm.executeQuery(secuenciaSQL);
             // idPostre = stm.executeQuery(secuenciaSQL);
             if (rs.next()) {
@@ -165,7 +165,7 @@ public class JFClientes extends javax.swing.JFrame {
         try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            System.out.println("Se ha agregado un nuevo cliente");
+            //System.out.println("Se ha agregado un nuevo cliente");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "alta");
         }

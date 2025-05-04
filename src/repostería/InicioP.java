@@ -32,7 +32,7 @@ public class InicioP extends javax.swing.JPanel {
         TablaProxPedidos();
         header = tablaProxPedidos.getTableHeader();
         header.setDefaultRenderer(new PedidosP.HeaderRenderer());
-        System.out.println(fecha);
+        //System.out.println(fecha);
         lblMonth.setText(fecha.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")));
         lblDayWeek.setText(fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES")));
         FormatoFechaDia(fecha);
