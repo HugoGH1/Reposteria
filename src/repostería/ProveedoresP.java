@@ -190,7 +190,7 @@ public class ProveedoresP extends javax.swing.JPanel {
                 id = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 4) {
-                    JOptionPane.showMessageDialog(button, "Editando " + id);
+                    //JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFProveedores IPro = new JFProveedores();
                     IPro.setVisible(true);
                     IPro.lblTitulo.setText("Actualizar proveedor");

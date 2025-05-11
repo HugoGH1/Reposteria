@@ -21,24 +21,28 @@ import javax.swing.table.DefaultTableModel;
  * @author Carolina
  */
 public class JFProveedores extends javax.swing.JFrame {
+
     private Connection con = null;
     String[] datos = new String[6];
     public int idproveedor;
+
     /**
      * Creates new form JFProveedores
      */
-     public void conectar() {
+    public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage()+"conectar");
+            System.out.println(sqle.getMessage() + "conectar");
         }
     }
+
     public JFProveedores() {
         initComponents();
         conectar();
     }
-    public Object creacionObjeto(){
+
+    public Object creacionObjeto() {
         Proveedores pv1 = new Proveedores();
         pv1.setNombre(txtNombre.getText());
         pv1.setNumeroTelefonico(txtNumTel.getText());
@@ -48,7 +52,7 @@ public class JFProveedores extends javax.swing.JFrame {
         pv1.setCodigoPostal(txtCP.getText());
         return pv1;
     }
-     
+
     public void rellenarDatosProveedor(String id) {
         ResultSet rs, rsP;
         Statement stm;
@@ -71,22 +75,22 @@ public class JFProveedores extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL PROVEEDOR");
         }
     }
-    
-    public void alta(Proveedores obj){
-            String secuenciaSQL = ("INSERT INTO Proveedores (Nombre, NumeroTelefonico,Calle,"
-                    + "NumeroExterior, Colonia, CodigoPostal) VALUE ('"+obj.getNombre()+"','"+
-                            obj.getNumeroTelefonico()+"','"+obj.getCalle()+"','"+obj.getNumeroExterior()+"','"+obj.getColonia()+
-                    "','"+obj.getCodigoPostal()+"')");
-            try{
+
+    public void alta(Proveedores obj) {
+        String secuenciaSQL = ("INSERT INTO Proveedores (Nombre, NumeroTelefonico,Calle,"
+                + "NumeroExterior, Colonia, CodigoPostal) VALUE ('" + obj.getNombre() + "','"
+                + obj.getNumeroTelefonico() + "','" + obj.getCalle() + "','" + obj.getNumeroExterior() + "','" + obj.getColonia()
+                + "','" + obj.getCodigoPostal() + "')");
+        try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            //System.out.println("Se ha agregado un nuevo proveedor");
+            JOptionPane.showMessageDialog(null,"¡Se ha registrado un nuevo proveedor con éxito!");
             //System.out.println("Se ha afectado: "+filasAfectadas);
-        }catch(SQLException sqle){
-            System.out.println(sqle.getMessage()+"alta");
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "alta");
         }
     }
-    
+
     public void actualizar(Proveedores obj) {
         try {
             String secuenciaSQL = "UPDATE proveedores SET Nombre = ?, NumeroTelefonico = ?, "
@@ -99,14 +103,14 @@ public class JFProveedores extends javax.swing.JFrame {
             ps.setString(4, obj.getNumeroExterior());
             ps.setString(5, obj.getColonia());
             ps.setString(6, obj.getCodigoPostal());
-            
+
             int filasActualizadas = ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los Datos del proveedor fueron actualizados");
+            JOptionPane.showMessageDialog(null, "¡Los datos del proveedor fueron actualizados!");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "actualizacion");
         }
     }
-    
+
     public void actualizarTabla() {
         DefaultTableModel miModelo = (DefaultTableModel) ProveedoresP.tablaProveedores.getModel();
         miModelo.setRowCount(0); // Limpiar filas existentes
@@ -129,7 +133,7 @@ public class JFProveedores extends javax.swing.JFrame {
             Logger.getLogger(ClienteP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -202,6 +206,18 @@ public class JFProveedores extends javax.swing.JFrame {
         panel2.setBorderColor(new java.awt.Color(218, 95, 128));
         panel2.setFocusable(false);
 
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
+
+        txtNumTel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumTelKeyTyped(evt);
+            }
+        });
+
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(226, 189, 220));
         jLabel1.setText("Nombre");
@@ -242,6 +258,12 @@ public class JFProveedores extends javax.swing.JFrame {
         panel3.setBackgroundColor(new java.awt.Color(218, 95, 128));
         panel3.setBorderColor(new java.awt.Color(218, 95, 128));
         panel3.setFocusable(false);
+
+        txtCalle.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCalleKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(226, 189, 220));
@@ -287,6 +309,11 @@ public class JFProveedores extends javax.swing.JFrame {
         txtCP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCPActionPerformed(evt);
+            }
+        });
+        txtCP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCPKeyTyped(evt);
             }
         });
 
@@ -391,20 +418,31 @@ public class JFProveedores extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (JFProveedores.lblTitulo.getText().equals("Registrar proveedor")) {
-            alta((Proveedores) creacionObjeto());
-            SwingUtilities.invokeLater(() -> actualizarTabla());
-        } else if (JFProveedores.lblTitulo.getText().equals("Actualizar proveedor")) {
-            actualizar((Proveedores) creacionObjeto());
-            SwingUtilities.invokeLater(() -> actualizarTabla());
+        if (validarCampos()) {
+             Proveedores proveedor = (Proveedores) creacionObjeto();
+            if (JFProveedores.lblTitulo.getText().equals("Registrar proveedor")) {
+                if (clienteYaExiste(proveedor.getNombre(),proveedor.getNumeroTelefonico(),proveedor.getCalle(),proveedor.getNumeroExterior(),proveedor.getColonia(),proveedor.getCodigoPostal())) {
+                    JOptionPane.showMessageDialog(null, "Ya hay un proveedor registrado con ese nombre!.");
+                    return;
+                }
+                alta((Proveedores) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            } else if (JFProveedores.lblTitulo.getText().equals("Actualizar proveedor")) {
+                if (clienteYaExiste(proveedor.getNombre(),proveedor.getNumeroTelefonico(),proveedor.getCalle(),proveedor.getNumeroExterior(),proveedor.getColonia(),proveedor.getCodigoPostal())) {
+                    JOptionPane.showMessageDialog(null, "Ya hay un proveedor registrado con ese nombre!.");
+                    return;
+                }
+                actualizar((Proveedores) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            }
+            //JOptionPane.showMessageDialog(null, "Listo");
+            txtNombre.setText("");
+            txtNumTel.setText("");
+            txtCalle.setText("");
+            txtNumExt.setText("");
+            txtColonia.setText("");
+            txtCP.setText("");
         }
-        JOptionPane.showMessageDialog(null, "Listo");
-        txtNombre.setText("");
-        txtNumTel.setText("");
-        txtCalle.setText("");
-        txtNumExt.setText("");
-        txtColonia.setText("");
-        txtCP.setText("");
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtCPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCPActionPerformed
@@ -415,6 +453,87 @@ public class JFProveedores extends javax.swing.JFrame {
         this.dispose();
         actualizarTabla();
     }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtCalleKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtCalleKeyTyped
+
+    private void txtNumTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumTelKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c))
+            evt.consume();
+    }//GEN-LAST:event_txtNumTelKeyTyped
+
+    private void txtCPKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c))
+            evt.consume();
+    }//GEN-LAST:event_txtCPKeyTyped
+
+    private boolean validarCampos() {
+        String nombre = txtNombre.getText().trim();
+        String telefono = txtNumTel.getText().trim();
+        String calle = txtCalle.getText().trim();
+        String numExt = txtNumExt.getText().trim();
+        String colonia = txtColonia.getText().trim();
+        String cp = txtCP.getText().trim();
+
+        if (nombre.isEmpty() || nombre.length() > 30) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (telefono.length() != 10 || !telefono.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El número de teléfono debe tener 10 dígitos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (calle.isEmpty() || calle.length() > 30) {
+            JOptionPane.showMessageDialog(this, "La calle es obligatoria y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!numExt.matches("^[A-Za-z0-9/-]{1,10}$")) {
+            JOptionPane.showMessageDialog(this, "El número exterior es obligatorio y no puede tener más de 10 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (colonia.isEmpty() || colonia.length() > 30) {
+            JOptionPane.showMessageDialog(this, "La colonia es obligatoria y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cp.isEmpty() || cp.length() != 5) {
+            JOptionPane.showMessageDialog(this, "El código postal es obligatorio y debe tener 5 caracteres numéricos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean clienteYaExiste(String nombre, String telefono, String calle, String numExt, String colonia, String cp) {
+        String sql = "SELECT COUNT(*) FROM proveedores WHERE Nombre = ? AND NumeroTelefonico = ? AND Calle = ? AND NumeroExterior = ? AND Colonia = ? AND CodigoPostal = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ps.setString(2, telefono);
+            ps.setString(3, calle);
+            ps.setString(4, numExt);
+            ps.setString(5, colonia);
+            ps.setString(6, cp);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia por todos los campos: " + e.getMessage());
+        }
+        return false;
+    }
 
     /**
      * @param args the command line arguments

@@ -136,7 +136,6 @@ public class JFClientes extends javax.swing.JFrame {
         miModelo.setRowCount(0); // Limpiar filas existentes
 
         //String sentenciaSQL = "SELECT * FROM clientes";
-
         String sentenciaSQL = "CALL pSelectCliente()";
 
         try {
@@ -165,7 +164,7 @@ public class JFClientes extends javax.swing.JFrame {
         try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            //System.out.println("Se ha agregado un nuevo cliente");
+            JOptionPane.showMessageDialog(null, "¡Cliente registrado con exito!");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "alta");
         }
@@ -185,9 +184,9 @@ public class JFClientes extends javax.swing.JFrame {
             ps.setString(6, obj.getColonia());
             ps.setString(7, obj.getCodigoPostal());
             ps.setInt(8, obj.getIdPostre());
-            
+
             int filasActualizadas = ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los Datos del cliente fueron actualizados");
+            JOptionPane.showMessageDialog(null, "Los Datos del cliente fueron actualizados!");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "actualizacion");
         }
@@ -286,6 +285,11 @@ public class JFClientes extends javax.swing.JFrame {
         panel2.setFocusable(false);
 
         txtCalle.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtCalle.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCalleKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(226, 189, 220));
@@ -309,6 +313,11 @@ public class JFClientes extends javax.swing.JFrame {
         jLabel7.setText("Colonia");
 
         txtCP.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtCP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCPKeyTyped(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(226, 189, 220));
@@ -368,18 +377,33 @@ public class JFClientes extends javax.swing.JFrame {
                 txtNombreActionPerformed(evt);
             }
         });
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(226, 189, 220));
         jLabel1.setText("Nombre");
 
         txtApellido.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtApellido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoKeyTyped(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(226, 189, 220));
         jLabel2.setText("Apellido");
 
         txtNumTelefonico.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtNumTelefonico.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumTelefonicoKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(226, 189, 220));
@@ -503,21 +527,36 @@ public class JFClientes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (lblTitulo.getText().equals("Registrar cliente")) {
-            alta((Clientes) creacionObjeto());
-            SwingUtilities.invokeLater(() -> actualizarTabla());
-        } else if (lblTitulo.getText().equals("Actualizar cliente")) {
-            actualizar((Clientes) creacionObjeto());
-            SwingUtilities.invokeLater(() -> actualizarTabla());
+        if (validarCampos()) {
+            Clientes cliente = (Clientes) creacionObjeto();
+
+            if (lblTitulo.getText().equals("Registrar cliente")) {
+                if (clienteYaExiste(cliente.getNombre(), cliente.getApellido(),cliente.getNumeroTelefonico(),cliente.getCalle(),cliente.getNumeroExterior(),cliente.getColonia(),cliente.getCodigoPostal())) {
+                    JOptionPane.showMessageDialog(null, "Ya hay un cliente registrado con ese nombre!.");
+                    return;
+                }
+
+                alta(cliente);
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+
+            } else if (lblTitulo.getText().equals("Actualizar cliente")) {
+                if (clienteYaExiste(cliente.getNombre(), cliente.getApellido(),cliente.getNumeroTelefonico(),cliente.getCalle(),cliente.getNumeroExterior(),cliente.getColonia(),cliente.getCodigoPostal())) {
+                    JOptionPane.showMessageDialog(null, "Ya hay un cliente registrado con ese nombre!.");
+                    return;
+                }
+                actualizar(cliente);
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            }
+
+            // Limpieza de campos
+            txtNombre.setText("");
+            txtApellido.setText("");
+            txtNumTelefonico.setText("");
+            txtCalle.setText("");
+            txtNumExt.setText("");
+            txtColonia.setText("");
+            txtCP.setText("");
         }
-        JOptionPane.showMessageDialog(null, "Listo");
-        txtNombre.setText("");
-        txtApellido.setText("");
-        txtNumTelefonico.setText("");
-        txtCalle.setText("");
-        txtNumExt.setText("");
-        txtColonia.setText("");
-        txtCP.setText("");
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -534,6 +573,101 @@ public class JFClientes extends javax.swing.JFrame {
     private void txtNumExtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumExtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumExtActionPerformed
+
+    private void txtNumTelefonicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumTelefonicoKeyTyped
+
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c))
+            evt.consume();
+    }//GEN-LAST:event_txtNumTelefonicoKeyTyped
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtApellidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtApellidoKeyTyped
+
+    private void txtCalleKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtCalleKeyTyped
+
+    private void txtCPKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c))
+            evt.consume();
+    }//GEN-LAST:event_txtCPKeyTyped
+
+    private boolean validarCampos() {
+        String nombre = txtNombre.getText().trim();
+        String apellido = txtApellido.getText().trim();
+        String telefono = txtNumTelefonico.getText().trim();
+        String calle = txtCalle.getText().trim();
+        String numExt = txtNumExt.getText().trim();
+        String colonia = txtColonia.getText().trim();
+        String cp = txtCP.getText().trim();
+
+        if (nombre.isEmpty() || nombre.length() > 30) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (apellido.isEmpty() || apellido.length() > 30) {
+            JOptionPane.showMessageDialog(this, "El apellido es obligatorio y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (telefono.length() != 10 || !telefono.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El número de teléfono debe tener 10 dígitos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (calle.isEmpty() || calle.length() > 30) {
+            JOptionPane.showMessageDialog(this, "La calle es obligatoria y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!numExt.matches("^[A-Za-z0-9/-]{1,10}$")) {
+            JOptionPane.showMessageDialog(this, "El número exterior es obligatorio y no puede tener más de 10 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (colonia.isEmpty() || colonia.length() > 30) {
+            JOptionPane.showMessageDialog(this, "La colonia es obligatoria y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cp.isEmpty() || cp.length() != 5) {
+            JOptionPane.showMessageDialog(this, "El código postal es obligatorio y debe tener 5 caracteres numéricos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean clienteYaExiste(String nombre, String apellido, String telefono, String calle, String numExt, String colonia, String cp) {
+    String sql = "SELECT COUNT(*) FROM Clientes WHERE Nombre = ? AND Apellido = ? AND NumeroTelefonico = ? AND Calle = ? AND NumeroExterior = ? AND Colonia = ? AND CodigoPostal = ?";
+    try (PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, nombre);
+        ps.setString(2, apellido);
+        ps.setString(3, telefono);
+        ps.setString(4, calle);
+        ps.setString(5, numExt);
+        ps.setString(6, colonia);
+        ps.setString(7, cp);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al verificar existencia por todos los campos: " + e.getMessage());
+    }
+    return false;
+}
 
     /**
      * @param args the command line arguments

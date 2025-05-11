@@ -92,8 +92,8 @@ public class InicioP extends javax.swing.JPanel {
 
         String Fecha2Dias = fecha.getYear() + "-" + mes + "-" + DosDias;
 
-        //String sentenciaSQL = "CALL pPedidosProximos(DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY));";
-        String sentenciaSQL = "CALL pPedidosProximos('" + Fecha2Dias + "')";
+        String sentenciaSQL = "CALL pPedidosProximos(DATE_ADD(CURRENT_DATE, INTERVAL 2 DAY));";
+       // String sentenciaSQL = "CALL pPedidosProximos('" + Fecha2Dias + "')";
 
         try {
             st = con.createStatement();

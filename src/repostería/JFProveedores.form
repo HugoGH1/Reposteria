@@ -201,8 +201,14 @@
           </Layout>
           <SubComponents>
             <Component class="Components.TextField" name="txtNombre">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNombreKeyTyped"/>
+              </Events>
             </Component>
             <Component class="Components.TextField" name="txtNumTel">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNumTelKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
@@ -277,6 +283,9 @@
           </Layout>
           <SubComponents>
             <Component class="Components.TextField" name="txtCalle">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCalleKeyTyped"/>
+              </Events>
             </Component>
             <Component class="Components.TextField" name="txtNumExt">
             </Component>
@@ -357,6 +366,7 @@
             <Component class="Components.TextField" name="txtCP">
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCPActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCPKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">

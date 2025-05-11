@@ -201,7 +201,7 @@ public class PedidosP extends javax.swing.JPanel {
                 idP = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 7) {
-                    JOptionPane.showMessageDialog(button, "Editando " + idP);
+                    //JOptionPane.showMessageDialog(button, "Editando " + idP);
                     JFPedidos JFPed = null;
                     try {
                         JFPed = new JFPedidos();

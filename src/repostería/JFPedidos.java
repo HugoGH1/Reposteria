@@ -78,7 +78,7 @@ public class JFPedidos extends javax.swing.JFrame {
             if (rs.next()) {
                 id = rs.getInt(1);
             }
-            System.out.println("Id postre listo" + rs);
+            //System.out.println("Id postre listo" + rs);
 
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage());
@@ -116,7 +116,7 @@ public class JFPedidos extends javax.swing.JFrame {
         String apellido = partes.length > 1 ? partes[1] : "";
         //System.out.println(apellido);
         p1.setIdCliente(id("SELECT idCliente FROM clientes WHERE Nombre = '" + nombre + "' AND Apellido = '" + apellido + "'", cmCliente, idCliente));
-       // System.out.println("idcliete en creacion objeto" + p1.getIdCliente());
+        // System.out.println("idcliete en creacion objeto" + p1.getIdCliente());
         String nombre2 = cmPostre.getSelectedItem().toString();
         p1.setIdPostre(id("SELECT idPostre FROM postres WHERE Nombre = '" + nombre2 + "'", cmPostre, idPostre));
         p1.setCantidad(Integer.parseInt(spinnerCantidad.getValue().toString()));
@@ -262,8 +262,8 @@ public class JFPedidos extends javax.swing.JFrame {
         try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-            //System.out.println("Se ha agregado un nuevo pedido");
-            System.out.println("Se ha afectado: " + filasAfectadas);
+            JOptionPane.showMessageDialog(null,"¡Se ha registrado un nuevo pedido con éxito!");
+            //************************************************System.out.println("Se ha afectado: " + filasAfectadas);
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "alta");
         }
@@ -285,7 +285,7 @@ public class JFPedidos extends javax.swing.JFrame {
             ps.setInt(6, obj.getIdTipoEntrega());
 
             int filasActualizadas = ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los Datos del pedido fueron actualizados");
+            JOptionPane.showMessageDialog(null, "¡Los datos del pedido fueron actualizados!");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "actualizacion");
         }
@@ -526,12 +526,31 @@ public class JFPedidos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (lblTituloP.getText().equals("Registrar Pedido")) {
-            alta((Pedidos) creacionObjeto());
-        } else if (lblTituloP.getText().equals("Actualizar Pedido")) {
-            actualizar((Pedidos) creacionObjeto());
+        if (validarCampos()) {
+            Pedidos pedido = (Pedidos) creacionObjeto();
+            if (lblTituloP.getText().equals("Registrar Pedido")) {
+                java.util.Date fechaUtil = calendar.getDate();
+                java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
+                if (pedidoYaExiste(pedido.getIdCliente(), pedido.getIdPostre(), pedido.getCantidad(),pedido.getCosto(),fechaSql)) {
+                    JOptionPane.showMessageDialog(null, "Ya está registrado este pedido!.");
+                    return;
+                }
+                alta((Pedidos) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            } else if (lblTituloP.getText().equals("Actualizar Pedido")) {
+                java.util.Date fechaUtil = calendar.getDate();
+                java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
+                if (pedidoYaExiste(pedido.getIdCliente(), pedido.getIdPostre(), pedido.getCantidad(),pedido.getCosto(),fechaSql)) {
+                    JOptionPane.showMessageDialog(null, "Ya está registrado este pedido!.");
+                    return;
+                }
+                actualizar((Pedidos) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            }
+            actualizarTabla();
+            spinnerCantidad.setValue(1);
+            calendar.setDate(null);
         }
-        JOptionPane.showMessageDialog(null, "Listo");
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
@@ -540,6 +559,33 @@ public class JFPedidos extends javax.swing.JFrame {
         //PedidosP pe = new PedidosP();
         //SwingUtilities.invokeLater(() -> pe.actualizarTabla());
     }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private boolean validarCampos() {
+        if (calendar.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecciona una fecha válida.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean pedidoYaExiste(int cliente, int postre, int cantidad, float costo, java.sql.Date fecha) {
+    String sql = "SELECT COUNT(*) FROM pedidos WHERE idCliente = ? AND idPostre = ? AND Cantidad = ? AND Costo = ? AND FechaEntrega = ?";
+    try (PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, cliente);
+        ps.setInt(2, postre);
+        ps.setInt(3, cantidad);
+        ps.setFloat(4, costo);
+        ps.setDate(5, fecha); // java.sql.Date
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al verificar existencia: " + e.getMessage());
+    }
+    return false;
+}
 
     /**
      * @param args the command line arguments

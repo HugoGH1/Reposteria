@@ -205,7 +205,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
                 id = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 6) {
-                    JOptionPane.showMessageDialog(button, "Editando " + id);
+                    //JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFMateriasPrimas IMat = null;
                     try {
                         IMat = new JFMateriasPrimas();
@@ -291,6 +291,7 @@ public class MateriaPrimaP extends javax.swing.JPanel {
         tablaMaterias.setFont(new java.awt.Font("Quicksand SemiBold", 0, 14)); // NOI18N
         tablaMaterias.setForeground(new java.awt.Color(51, 51, 51));
         tablaMaterias.setFocusable(false);
+        tablaMaterias.setRowHeight(32);
         tablaMaterias.setSelectionBackground(new java.awt.Color(243, 209, 220));
         tablaMaterias.setSelectionForeground(new java.awt.Color(153, 153, 153));
         jScrollPane1.setViewportView(tablaMaterias);

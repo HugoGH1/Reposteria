@@ -58,9 +58,7 @@ public class ClienteP extends javax.swing.JPanel {
     public void conectar() {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
-            //System.out.println("Conexion Correcta");
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage() + "conectar");
         }
     }
 
@@ -209,7 +207,6 @@ public class ClienteP extends javax.swing.JPanel {
                 id = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 5) {
-                    JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFClientes ICli = new JFClientes();
                     ICli.setVisible(true);
                     lblTitulo.setText("Actualizar cliente");
@@ -274,7 +271,6 @@ public class ClienteP extends javax.swing.JPanel {
         tablaClientes.setForeground(new java.awt.Color(51, 51, 51));
         tablaClientes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tablaClientes.setFocusable(false);
-        tablaClientes.setGridColor(new java.awt.Color(252, 228, 236));
         tablaClientes.setRowHeight(32);
         tablaClientes.setSelectionBackground(new java.awt.Color(243, 209, 220));
         tablaClientes.setSelectionForeground(new java.awt.Color(153, 153, 153));

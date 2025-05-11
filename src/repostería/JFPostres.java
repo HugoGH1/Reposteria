@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import static repostería.PostreP.st;
 import static repostería.PostreP.tablaPostre;
@@ -22,9 +23,11 @@ import static repostería.PostreP.tablaPostre;
  * @author Carolina
  */
 public class JFPostres extends javax.swing.JFrame {
+
     private Connection con = null;
     String[] datos = new String[6];
     int idpostre;
+
     /**
      * Creates new form JFPostres
      */
@@ -32,44 +35,46 @@ public class JFPostres extends javax.swing.JFrame {
         try {
             con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage()+"conectar");
+            System.out.println(sqle.getMessage() + "conectar");
         }
     }
+
     public JFPostres() {
         initComponents();
         conectar();
     }
-    
-    public Object creacionObjeto(){
+
+    public Object creacionObjeto() {
         Postres p1 = new Postres();
         p1.setNombre(txtNombre.getText());
         p1.setPrecioVenta(Float.parseFloat(txtPrecioVenta.getText()));
         return p1;
     }
-    
+
     public void actualizarTabla() {
-    DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
-    miModelo.setRowCount(0); // Limpiar filas existentes
+        DefaultTableModel miModelo = (DefaultTableModel) tablaPostre.getModel();
+        miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "SELECT * FROM postres";
+        String sentenciaSQL = "SELECT * FROM postres";
 
-    try {
-        st = con.createStatement();
-        ResultSet rs = st.executeQuery(sentenciaSQL);
-        while (rs.next()) {
-            datos[0] = rs.getString(1);
-            datos[1] = rs.getString(2);
-            datos[2] = rs.getString(3);
-            datos[3] = rs.getString(4);
-            datos[4] = "";
-            datos[5] = "";
-            miModelo.addRow(datos);
+        try {
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentenciaSQL);
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = "";
+                datos[5] = "";
+                miModelo.addRow(datos);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
     }
-}
-    public void rellenarDatosPostres(String id){
+
+    public void rellenarDatosPostres(String id) {
         ResultSet rs;
         Statement stm;
         idpostre = Integer.parseInt(id);
@@ -87,45 +92,47 @@ public class JFPostres extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "HUBO UN ERROR PARA CARGAR LOS DATOS DEL POSTRE");
         }
     }
-    
-    public void alta(Postres obj){
-            String secuenciaSQL = ("INSERT INTO Postres (Nombre, PrecioVenta, Cantidad) VALUE ('"+obj.getNombre()+"','"+obj.getPrecioVenta()+"','"+0+"')");
-            try{
+
+    public void alta(Postres obj) {
+        String secuenciaSQL = ("INSERT INTO Postres (Nombre, PrecioVenta, Cantidad) VALUE ('" + obj.getNombre() + "','" + obj.getPrecioVenta() + "','" + 0 + "')");
+        try {
             Statement stm = con.createStatement();
             int filasAfectadas = stm.executeUpdate(secuenciaSQL);
-           // System.out.println("Se ha agregado un nuevo postre");
+            JOptionPane.showMessageDialog(null,"¡Se ha registrado un nuevo postre con éxito!");
             //System.out.println("Se ha afectado: "+filasAfectadas);
-        }catch(SQLException sqle){
-            System.out.println(sqle.getMessage()+"alta");
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "alta");
         }
     }
+
     // La lógica va a estar en jalar el objeto de la tabla
-    public void eliminar(Postres obj){
-        try{
+    public void eliminar(Postres obj) {
+        try {
             PreparedStatement ps = con.prepareStatement("DELETE FROM Postres WHERE Postre = ?");
-            
+
             ps.setString(1, obj.getNombre());
             int filasAfectadas = ps.executeUpdate();
             //System.out.println("Número de filas afectadas: "+filasAfectadas);
             actualizarTabla();
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
             System.out.println(sqle.getMessage());
             sqle.printStackTrace();
         }
     }
-    
-    public void actualizar(Postres obj){
+
+    public void actualizar(Postres obj) {
         try {
             String secuenciaSQL = "UPDATE postres SET Nombre = ?, PrecioVenta = ? WHERE idPostre =" + idpostre + "";
             PreparedStatement ps = con.prepareStatement(secuenciaSQL);
             ps.setString(1, obj.getNombre());
             ps.setFloat(2, obj.getPrecioVenta());
             int filasActualizadas = ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los Datos del postre fueron actualizados");
+            JOptionPane.showMessageDialog(null, "Los datos del postre fueron actualizados!.");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "actualizacion");
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -202,9 +209,19 @@ public class JFPostres extends javax.swing.JFrame {
 
         txtNombre.setForeground(new java.awt.Color(51, 51, 51));
         txtNombre.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
 
         txtPrecioVenta.setForeground(new java.awt.Color(51, 51, 51));
         txtPrecioVenta.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtPrecioVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioVentaKeyTyped(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(226, 189, 220));
@@ -290,19 +307,76 @@ public class JFPostres extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (lblTituloPostre.getText().equals("Registrar postre")) {
-            alta((Postres) creacionObjeto());
-        } else if (lblTituloPostre.getText().equals("Actualizar postre")) {
-            actualizar((Postres) creacionObjeto());
+        if (validarCampos()) {
+            Postres postre = (Postres) creacionObjeto();
+            if (lblTituloPostre.getText().equals("Registrar postre")) {
+
+                if (postreYaExiste(postre.getNombre())) {
+                    JOptionPane.showMessageDialog(null, "Este postre ya está registrado!.");
+                    return;
+                }
+                alta((Postres) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            } else if (lblTituloPostre.getText().equals("Actualizar postre")) {
+                if (postreYaExiste(postre.getNombre())) {
+                    JOptionPane.showMessageDialog(null, "Este postre ya está registrado!.");
+                    return;
+                }
+                actualizar((Postres) creacionObjeto());
+                SwingUtilities.invokeLater(() -> actualizarTabla());
+            }
+            txtNombre.setText("");
+            txtPrecioVenta.setText("");
+            actualizarTabla();
         }
-        txtNombre.setText("");
-        txtPrecioVenta.setText("");
+
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         this.dispose();
         actualizarTabla();
     }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+            evt.consume();
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtPrecioVentaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioVentaKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.')
+            evt.consume();
+    }//GEN-LAST:event_txtPrecioVentaKeyTyped
+
+    private boolean validarCampos() {
+        String postre = txtNombre.getText().trim();
+        String costo = txtPrecioVenta.getText().trim();
+
+        if (postre.isEmpty() || postre.length() > 30) {
+            JOptionPane.showMessageDialog(this, "El nombre del postre es obligatorio y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (costo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debes ingresar el precio de venta para el postre.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean postreYaExiste(String nombre) {
+        String sql = "SELECT COUNT(*) FROM postres WHERE Nombre = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia: " + e.getMessage());
+        }
+        return false;
+    }
 
     /**
      * @param args the command line arguments
