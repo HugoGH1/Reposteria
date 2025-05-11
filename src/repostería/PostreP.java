@@ -191,13 +191,13 @@ public class PostreP extends javax.swing.JPanel {
                 String id = table.getValueAt(selectedRow, 0).toString();
 
                 if (columnIndex == 4) {
-                    JOptionPane.showMessageDialog(button, "Editando " + id);
+                    //JOptionPane.showMessageDialog(button, "Editando " + id);
                     JFPostres IPos = new JFPostres();
                     IPos.setVisible(true);
                     IPos.rellenarDatosPostres(id);
                     lblTituloPostre.setText("Actualizar postre");
                 } else if (columnIndex == 5) {
-                    JOptionPane.showMessageDialog(button, "Eliminando " + id);
+                  //  JOptionPane.showMessageDialog(button, "Eliminando " + id);
                     try {
                         PreparedStatement ps = con.prepareStatement("DELETE FROM Postres WHERE idPostre = ?");
 
@@ -213,7 +213,7 @@ public class PostreP extends javax.swing.JPanel {
                     }
                     // miModelo.removeRow(row); // Elimina la fila visualmente (falta eliminar de BD)
                 } else if (columnIndex == 6) {
-                    JOptionPane.showMessageDialog(button, "Horneando " + id);
+                   // JOptionPane.showMessageDialog(button, "Horneando " + id);
                     ResultSet rs;
                     PreparedStatement pstm;
                     String sentencia = "SELECT idMateriasPrimas, Cantidad FROM recetas WHERE idPostre = ?";
@@ -228,7 +228,7 @@ public class PostreP extends javax.swing.JPanel {
                         try {
                             con.setAutoCommit(false);
                             while (rs.next()) {
-                                System.out.println(rs.getString("cantidad"));
+                                //System.out.println(rs.getString("cantidad"));
 
                                 PreparedStatement pstm1;
                                 String sentencia1 = "SELECT stock FROM materiasprimas WHERE idmateriasprimas = ?";
@@ -274,7 +274,7 @@ public class PostreP extends javax.swing.JPanel {
 
                                     } else {
                                         con.rollback(); //  Cancelamos cualquier posible cambio
-                                        System.out.println("Transacción cancelada.");
+                                        //System.out.println("Transacción cancelada.");
                                     }
 
                                     // con.setAutoCommit(true); // Restauramos auto-commit
@@ -295,7 +295,7 @@ public class PostreP extends javax.swing.JPanel {
                                 se.printStackTrace();
                             }
                             e.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Error al procesar la transacción.");
+                           // JOptionPane.showMessageDialog(null, "Error al procesar la transacción.");
                         }
                         if (todoCorrecto && conta == contador) {
                             con.commit();
@@ -348,7 +348,7 @@ public class PostreP extends javax.swing.JPanel {
                             con.setAutoCommit(true);
                         }//  Confirmamos la transacción
                       //  System.out.println(todoCorrecto);
-                        JOptionPane.showMessageDialog(null, "Todos los stocks fueron actualizados correctamente.");
+                        //JOptionPane.showMessageDialog(null, "Todos los stocks fueron actualizados correctamente.");
                     } catch (SQLException ex) {
                         Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -447,6 +447,7 @@ public class PostreP extends javax.swing.JPanel {
     private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
         JFPostres IPos = new JFPostres();
         IPos.setVisible(true);
+        lblTituloPostre.setText("Registrar postre");
     }//GEN-LAST:event_btnInsertarActionPerformed
 
     static class HeaderRenderer extends DefaultTableCellRenderer {

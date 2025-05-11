@@ -62,7 +62,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
                 Combo.addItem(dato);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage() + "HUBO UN ERROR PARA CARGAR LOS PROYECTOS");
+            JOptionPane.showMessageDialog(null, e.getMessage() + "HUBO UN ERROR PARA CARGAR LOS DATOS");
         }
     }
 
@@ -165,17 +165,18 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
             System.out.println(sql.getMessage());
         }
     }
-        public void actualizarTabla() {
-    DefaultTableModel miModelo = (DefaultTableModel) tablaMaterias.getModel();
-    miModelo.setRowCount(0); // Limpiar filas existentes
 
-    String sentenciaSQL = "CALL pSelectMateria()";
+    public void actualizarTabla() {
+        DefaultTableModel miModelo = (DefaultTableModel) tablaMaterias.getModel();
+        miModelo.setRowCount(0); // Limpiar filas existentes
 
-    try {
-        st = con.createStatement();
-        ResultSet rs = st.executeQuery(sentenciaSQL);
-        while (rs.next()) {
-            datos[0] = rs.getString(1);
+        String sentenciaSQL = "CALL pSelectMateria()";
+
+        try {
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentenciaSQL);
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
                 datos[1] = rs.getString(2);
                 datos[2] = rs.getString(3);
                 datos[3] = rs.getString(4);
@@ -183,12 +184,13 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
                 datos[5] = rs.getString(6);
                 datos[6] = "";
                 datos[7] = "";
-            miModelo.addRow(datos);
+                miModelo.addRow(datos);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MateriaPrimaP.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(MateriaPrimaP.class.getName()).log(Level.SEVERE, null, ex);
     }
-}
+
     public void alta(MateriasPrimas obj) {
         String secuenciaSQL = ("INSERT INTO materiasprimas (Nombre, idCategoria, Stock, idUnidadMedida,"
                 + "idProveedor) VALUE ('" + obj.getNombre() + "','" + obj.getIdCategoria() + "','"
@@ -202,20 +204,20 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
             System.out.println(sqle.getMessage() + "alta");
         }
     }
-     public void actualizar(MateriasPrimas obj) {
+
+    public void actualizar(MateriasPrimas obj) {
         try {
             String secuenciaSQL = "UPDATE materiasprimas SET Nombre = ?, idCategoria = ?, Stock = ?, "
                     + "idUnidadMedida = ?, idProveedor = ? "
-                    + "WHERE idMateriasPrimas =" + idmateriaprima +"";
+                    + "WHERE idMateriasPrimas =" + idmateriaprima + "";
             PreparedStatement ps = con.prepareStatement(secuenciaSQL);
             ps.setString(1, obj.getNombre());
             ps.setInt(2, obj.getIdCategoria());
             ps.setInt(3, obj.getStock());
             ps.setInt(4, obj.getidUnidadMedida());
             ps.setInt(5, obj.getIdProveedor());
-         
+
             int filasActualizadas = ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Los Datos de la materia prima fueron actualizados");
         } catch (SQLException sqle) {
             System.out.println(sqle.getMessage() + "actualizacion");
         }
@@ -231,7 +233,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
         panel1 = new Components.Panel();
         lblTituloMP = new javax.swing.JLabel();
@@ -252,13 +254,13 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(244, 227, 221));
 
-        jButton1.setBackground(new java.awt.Color(225, 141, 150));
-        jButton1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(102, 102, 102));
-        jButton1.setText("GUARDAR");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setBackground(new java.awt.Color(225, 141, 150));
+        btnGuardar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnGuardar.setForeground(new java.awt.Color(102, 102, 102));
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
@@ -355,6 +357,11 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
 
         txtStock.setForeground(new java.awt.Color(153, 153, 153));
         txtStock.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        txtStock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtStockKeyTyped(evt);
+            }
+        });
 
         cmProveedor.setForeground(new java.awt.Color(153, 153, 153));
         cmProveedor.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
@@ -421,7 +428,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
                             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                             .addGap(24, 24, 24)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -440,7 +447,7 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
                 .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14))
         );
@@ -459,18 +466,29 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (lblTituloMP.getText().equals("Registrar Materia Prima")) {
-            alta((MateriasPrimas) creacionObjeto());
-            SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
-        } else if (lblTituloMP.getText().equals("Actualizar Materia Prima")) {
-            actualizar((MateriasPrimas) creacionObjeto());
-            SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (validarCampos()) {
+            MateriasPrimas materia = (MateriasPrimas) creacionObjeto();
+            if (lblTituloMP.getText().equals("Registrar Materia Prima")) {
+                if (materiaYaExiste(materia.getNombre(), materia.getIdCategoria(), materia.getStock(),materia.getidUnidadMedida(),materia.getIdProveedor())) {
+                    JOptionPane.showMessageDialog(null, "Ya está registrada esta materia prima!.");
+                    return;
+                }
+                alta((MateriasPrimas) creacionObjeto());
+                SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+            } else if (lblTituloMP.getText().equals("Actualizar Materia Prima")) {
+                if (materiaYaExiste(materia.getNombre(), materia.getIdCategoria(), materia.getStock(),materia.getidUnidadMedida(),materia.getIdProveedor())) {
+                    JOptionPane.showMessageDialog(null, "Ya está registrada esta materia prima!.");
+                    return;
+                }
+                actualizar((MateriasPrimas) creacionObjeto());
+                SwingUtilities.invokeLater(() -> MateriaPrimaP.actualizarTabla());
+            }
+            txtNombre.setText("");
+            txtStock.setText("");
         }
-        JOptionPane.showMessageDialog(null, "Listo");
-        txtNombre.setText("");
-        txtStock.setText("");
-    }//GEN-LAST:event_jButton1ActionPerformed
+
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         this.dispose();
@@ -480,6 +498,45 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void txtStockKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStockKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c))
+            evt.consume();
+    }//GEN-LAST:event_txtStockKeyTyped
+
+    private boolean validarCampos() {
+        String nombre = txtNombre.getText().trim();
+        String stock = txtStock.getText().trim();
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio y no puede tener más de 30 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (stock.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "¡Por favor, ingresa la cantidad de stock disponible!.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean materiaYaExiste(String nombre, int categoria, int stock, int unidadm, int proveedor) {
+        String sql = "SELECT COUNT(*) FROM materiasprimas WHERE Nombre = ? AND idCategoria = ? AND Stock = ? AND idUnidadMedida = ? AND idProveedor = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ps.setInt(2, categoria);
+            ps.setInt(3, stock);
+            ps.setInt(4, unidadm);
+            ps.setInt(5, proveedor);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia: " + e.getMessage());
+        }
+        return false;
+    }
 
     /**
      * @param args the command line arguments
@@ -522,10 +579,10 @@ public class JFMateriasPrimas extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrar;
+    private javax.swing.JButton btnGuardar;
     private Components.ComboBox cmCategoria;
     private Components.ComboBox cmProveedor;
     private Components.ComboBox cmUnidadMedida;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
