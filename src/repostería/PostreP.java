@@ -231,7 +231,7 @@ public class PostreP extends javax.swing.JPanel {
                                 //System.out.println(rs.getString("cantidad"));
 
                                 PreparedStatement pstm1;
-                                String sentencia1 = "SELECT stock FROM materiasprimas WHERE idmateriasprimas = ?";
+                                String sentencia1 = "SELECT stock, Nombre FROM materiasprimas WHERE idmateriasprimas = ?";
                                 try {
                                     pstm1 = con.prepareStatement(sentencia1);
                                     pstm1.setString(1, rs.getString("idmateriasprimas"));
@@ -251,7 +251,7 @@ public class PostreP extends javax.swing.JPanel {
                                         } else {
 
                                             todoCorrecto = false;
-                                            JOptionPane.showMessageDialog(null, "Falta " + Math.abs(resto) + " de la materia prima " + rs.getString("idmateriasprimas"));
+                                            JOptionPane.showMessageDialog(null, "Falta " + Math.abs(resto) + " de la materia prima " + rs1.getString("nombre").trim());
 
                                         }
                                         contador++;
@@ -385,6 +385,7 @@ public class PostreP extends javax.swing.JPanel {
         tablaPostre = new javax.swing.JTable();
         btnInsertar = new Components.Button();
         jLabel1 = new javax.swing.JLabel();
+        btnReceta = new Components.Button();
 
         setBackground(new java.awt.Color(255, 194, 209));
         setMaximumSize(new java.awt.Dimension(950, 720));
@@ -415,6 +416,16 @@ public class PostreP extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(218, 95, 128));
         jLabel1.setText("POSTRES");
 
+        btnReceta.setBackground(new java.awt.Color(204, 102, 255));
+        btnReceta.setText("Agregar Receta");
+        btnReceta.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        btnReceta.setRadius(20);
+        btnReceta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecetaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -425,7 +436,10 @@ public class PostreP extends javax.swing.JPanel {
                         .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnReceta, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(278, 278, 278)
                         .addComponent(jLabel1)))
@@ -437,7 +451,9 @@ public class PostreP extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReceta, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(55, Short.MAX_VALUE))
@@ -449,6 +465,15 @@ public class PostreP extends javax.swing.JPanel {
         IPos.setVisible(true);
         lblTituloPostre.setText("Registrar postre");
     }//GEN-LAST:event_btnInsertarActionPerformed
+
+    private void btnRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecetaActionPerformed
+        try {
+            JFRecetas IRec = new JFRecetas();
+            IRec.setVisible(true);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(PostreP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRecetaActionPerformed
 
     static class HeaderRenderer extends DefaultTableCellRenderer {
 
@@ -469,6 +494,7 @@ public class PostreP extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private Components.Button btnInsertar;
+    private Components.Button btnReceta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablaPostre;

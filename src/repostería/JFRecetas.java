@@ -1,23 +1,94 @@
 package repostería;
 
+import java.lang.reflect.Constructor;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Carolina
  */
 public class JFRecetas extends javax.swing.JFrame {
 
-    /** Creates new form JFRecetas */
-    public JFRecetas() {
-        initComponents();
-        cmIdPostre.setEnabled(false);
-        cmMateriasPrimas.setEnabled(false);
-        txtCantidad.setEditable(false);
-        txtPorciones.setEditable(false);
-        btnInsertar.setEnabled(false);
-        cmRecetas.setEnabled(false);
-            btnConsultar.setEnabled(false);
+    private Connection con = null;
+    String[] datos = new String[7];
+    public int idPostre, idMateriasPrimas;
+    
+    public void conectar() {
+        try {
+            con = DriverManager.getConnection("jdbc:mysql://localhost/reposteria?user=root&password=");
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "conectar");
+        }
     }
+    /** Creates new form JFRecetas */
+    public JFRecetas() throws NoSuchMethodException {
+        initComponents();
 
+        conectar();
+        RellenarCm("SELECT Nombre FROM Postres", "Nombre", cmIdPostre, Postres.class);
+        RellenarCm("SELECT Nombre FROM MateriasPrimas", "Nombre", cmMateriasPrimas, MateriasPrimas.class);
+        
+    }
+    public <T> void RellenarCm(String Consulta, String Columna, JComboBox Combo, Class<T> clase) throws NoSuchMethodException {
+
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(Consulta);
+            while (rs.next()) {
+                String dato = rs.getString(Columna);
+                Combo.addItem(dato);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage() + "HUBO UN ERROR PARA CARGAR LOS DATOS");
+        }
+    }
+    public int id(String query, JComboBox<String> cmPostre1, int id) {
+        try {
+            Statement stm = con.createStatement();
+            //System.out.println("hola");
+            ResultSet rs = stm.executeQuery(query);
+            // idPostre = stm.executeQuery(secuenciaSQL);
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            //System.out.println("Id postre listo" + rs);
+
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "");
+        }
+        return id;
+    }public Object creacionObjeto() {
+        Recetas r1 = new Recetas();
+        r1.setCantidad(Integer.parseInt(txtCantidad.getText()));
+        String postre = cmIdPostre.getSelectedItem().toString();
+        r1.setIdPostre(id("SELECT idPostre FROM Postres WHERE Nombre = '" + postre + "'", cmIdPostre, idPostre));
+        r1.setPorciones(Integer.parseInt(txtPorciones.getText()));
+        String materia = cmMateriasPrimas.getSelectedItem().toString();
+        r1.setIdMateriasPrimas(id("SELECT idMateriasPrimas FROM materiasprimas WHERE Nombre = '" + materia + "'", cmMateriasPrimas, idMateriasPrimas));
+        
+        return r1;
+    }
+    public void alta(Recetas obj) {
+        String secuenciaSQL = ("INSERT INTO recetas (idPostre, idMateriasPrimas, Cantidad, Porciones) VALUES ('" + obj.getIdPostre() + "','" + obj.getIdMateriasPrimas() + "','"
+                + obj.getCantidad() + "','" + obj.getPorciones() + "')");
+        try {
+            Statement stm = con.createStatement();
+            int filasAfectadas = stm.executeUpdate(secuenciaSQL);
+            //System.out.println("Se ha agregado una nueva materia prima");
+            //System.out.println("Se ha afectado: " + filasAfectadas);
+        } catch (SQLException sqle) {
+            System.out.println(sqle.getMessage() + "alta");
+        }
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -29,18 +100,10 @@ public class JFRecetas extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jSeparator1 = new javax.swing.JSeparator();
         btnInsertar = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
         panel1 = new Components.Panel();
         jLabel5 = new javax.swing.JLabel();
-        panel2 = new Components.Panel();
-        rdConsultar = new javax.swing.JRadioButton();
-        cmRecetas = new Components.ComboBox();
-        btnConsultar = new javax.swing.JButton();
         panel3 = new Components.Panel();
-        rdInsertar = new javax.swing.JRadioButton();
         cmIdPostre = new Components.ComboBox();
         cmMateriasPrimas = new Components.ComboBox();
         jLabel3 = new javax.swing.JLabel();
@@ -54,27 +117,17 @@ public class JFRecetas extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(244, 227, 221));
-
-        jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
-        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jPanel1.setPreferredSize(new java.awt.Dimension(600, 743));
 
         btnInsertar.setBackground(new java.awt.Color(225, 141, 150));
         btnInsertar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         btnInsertar.setForeground(new java.awt.Color(102, 102, 102));
         btnInsertar.setText("Insertar");
-
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
+        btnInsertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertarActionPerformed(evt);
             }
-        ));
-        jScrollPane1.setViewportView(table);
+        });
 
         panel1.setBackgroundColor(new java.awt.Color(218, 95, 128));
         panel1.setBorderColor(new java.awt.Color(218, 95, 128));
@@ -101,62 +154,18 @@ public class JFRecetas extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        panel2.setBackgroundColor(new java.awt.Color(218, 95, 128));
-        panel2.setBorderColor(new java.awt.Color(218, 95, 128));
-        panel2.setFocusable(false);
-
-        buttonGroup1.add(rdConsultar);
-        rdConsultar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-        rdConsultar.setForeground(new java.awt.Color(226, 189, 220));
-        rdConsultar.setText("Consultar");
-        rdConsultar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdConsultarActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
-        panel2.setLayout(panel2Layout);
-        panel2Layout.setHorizontalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel2Layout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                        .addComponent(rdConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                        .addComponent(cmRecetas, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40))))
-        );
-        panel2Layout.setVerticalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rdConsultar)
-                .addGap(26, 26, 26)
-                .addComponent(cmRecetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
-        );
-
-        btnConsultar.setBackground(new java.awt.Color(225, 141, 150));
-        btnConsultar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-        btnConsultar.setForeground(new java.awt.Color(102, 102, 102));
-        btnConsultar.setText("Consultar");
-
         panel3.setBackgroundColor(new java.awt.Color(218, 95, 128));
         panel3.setBorderColor(new java.awt.Color(218, 95, 128));
         panel3.setFocusable(false);
 
-        buttonGroup1.add(rdInsertar);
-        rdInsertar.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
-        rdInsertar.setForeground(new java.awt.Color(226, 189, 220));
-        rdInsertar.setText("Insertar");
-        rdInsertar.addActionListener(new java.awt.event.ActionListener() {
+        cmIdPostre.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+        cmIdPostre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdInsertarActionPerformed(evt);
+                cmIdPostreActionPerformed(evt);
             }
         });
+
+        cmMateriasPrimas.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(226, 189, 220));
@@ -178,9 +187,6 @@ public class JFRecetas extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel3Layout.createSequentialGroup()
-                        .addComponent(rdInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panel3Layout.createSequentialGroup()
                         .addComponent(cmMateriasPrimas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(15, 15, 15))
                     .addGroup(panel3Layout.createSequentialGroup()
@@ -191,8 +197,6 @@ public class JFRecetas extends javax.swing.JFrame {
             panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rdInsertar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -206,6 +210,10 @@ public class JFRecetas extends javax.swing.JFrame {
         panel4.setBackgroundColor(new java.awt.Color(218, 95, 128));
         panel4.setBorderColor(new java.awt.Color(218, 95, 128));
         panel4.setFocusable(false);
+
+        txtCantidad.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
+
+        txtPorciones.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Quicksand", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(226, 189, 220));
@@ -250,59 +258,31 @@ public class JFRecetas extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(panel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(panel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(61, 61, 61))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGap(136, 136, 136)
-                                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(40, 40, 40)
-                                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)))))
-                .addGap(25, 25, 25))
+                .addGap(0, 268, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(73, 73, 73)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(panel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(136, 136, 136)
+                        .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(jSeparator1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(55, 55, 55)
-                                .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(panel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(51, 51, 51)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGap(54, 54, 54)
+                .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(panel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -313,32 +293,60 @@ public class JFRecetas extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rdInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdInsertarActionPerformed
-        cmRecetas.setEnabled(false);
-            btnConsultar.setEnabled(false);
-            cmIdPostre.setEnabled(true);
-        cmMateriasPrimas.setEnabled(true);
-        txtCantidad.setEditable(true);
-        txtPorciones.setEditable(true);
-        btnInsertar.setEnabled(true);
-    }//GEN-LAST:event_rdInsertarActionPerformed
+    private void cmIdPostreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmIdPostreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmIdPostreActionPerformed
 
-    private void rdConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdConsultarActionPerformed
-        cmIdPostre.setEnabled(false);
-        cmMateriasPrimas.setEnabled(false);
-        txtCantidad.setEditable(false);
-        txtPorciones.setEditable(false);
-        btnInsertar.setEnabled(false);
-        cmRecetas.setEnabled(true);
-            btnConsultar.setEnabled(true);
-    }//GEN-LAST:event_rdConsultarActionPerformed
+    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
+        if (validarCamposR()) {
+            Recetas receta = (Recetas) creacionObjeto();
+                if (recetaYaExiste(receta.getIdPostre(), receta.getIdMateriasPrimas(), receta.getCantidad(),receta.getPorciones())) {
+                    JOptionPane.showMessageDialog(null, "Ya está registrada esta parte de la receta!.");
+                    return;
+                }
+                alta((Recetas) creacionObjeto());
+        }
+                
+    }//GEN-LAST:event_btnInsertarActionPerformed
 
+    private boolean validarCamposR() {
+        String cantidad = txtCantidad.getText().trim();
+        String porciones = txtPorciones.getText().trim();
+        if (cantidad.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La cantidad es obligatoria y no puede tener más de 10 caracteres.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (porciones.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "¡Por favor, ingresa la cantidad de porciones a realizar.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean recetaYaExiste(int postre, int materiaprima, int cantidad, int porciones) {
+        String sql = "SELECT COUNT(*) FROM recetas WHERE idPostre= ? AND idMateriasPrimas = ? AND Cantidad = ? AND Porciones = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, postre);
+            ps.setInt(2, materiaprima);
+            ps.setInt(3, cantidad);
+            ps.setInt(4, porciones);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia: " + e.getMessage());
+        }
+        return false;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -369,33 +377,29 @@ public class JFRecetas extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new JFRecetas().setVisible(true);
+                try {
+                    new JFRecetas().setVisible(true);
+                } catch (NoSuchMethodException ex) {
+                    Logger.getLogger(JFRecetas.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnInsertar;
     private javax.swing.ButtonGroup buttonGroup1;
     private Components.ComboBox cmIdPostre;
     private Components.ComboBox cmMateriasPrimas;
-    private Components.ComboBox cmRecetas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private Components.Panel panel1;
-    private Components.Panel panel2;
     private Components.Panel panel3;
     private Components.Panel panel4;
-    private javax.swing.JRadioButton rdConsultar;
-    private javax.swing.JRadioButton rdInsertar;
-    private javax.swing.JTable table;
     private Components.TextField txtCantidad;
     private Components.TextField txtPorciones;
     // End of variables declaration//GEN-END:variables

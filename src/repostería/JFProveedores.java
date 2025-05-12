@@ -462,7 +462,7 @@ public class JFProveedores extends javax.swing.JFrame {
 
     private void txtCalleKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleKeyTyped
         char c = evt.getKeyChar();
-        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-')
+        if (!Character.isLetter(c) && c != ' ' && c != '.' && c != '-' && !Character.isDigit(c))
             evt.consume();
     }//GEN-LAST:event_txtCalleKeyTyped
 
